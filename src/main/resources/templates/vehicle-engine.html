@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vehicleEngines</title>
+</head>
+<body>
+<h3>Vehicle engines</h3>
+<div th:each="engine : ${engine}">
+  <span th:text="${engine.getValue()}"></span>
+</div>
+</body>
+</html>

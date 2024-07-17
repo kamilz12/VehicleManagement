@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CARS</title>
+</head>
+<body>
+<h3> Makes cars:</h3>
+<div th:each="make : ${makes}">
+    <span th:text="${make}"></span>
+</div>
+</body>
+</html>

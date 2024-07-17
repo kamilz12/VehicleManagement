@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Create New Vehicle</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<form th:action="@{/processVehicleForm}" th:object="${vehicleCategory}" method="post">
+    <select id="make" th:field="*{make}">
+        <option value="">Select a model</option>
+        <option th:each="temp: ${makes}" th:value="${temp}" th:text="${temp}"></option>
+    </select><br>
+
+    <select id="model" th:field="*{models}">
+        <option value="">Select a model</option>
+    </select><br>
+    <select id="year" th:field="*{year}">
+        <option value="">Select a year</option>
+    </select><br>
+    <select id="engine" th:field="*{engines}">
+        <option value="">Select an engine</option>
+    </select><br>
+    <input type="submit" value="Submit">
+</form>
+<script>
+    $(document).ready(function() {
+        $('#make').change(function() {
+            var selectedMake = $(this).val();
+            $.ajax({
+                url: '/vehicle/models?make=' + selectedMake,
+                type: 'GET',
+                success: function(response) {
+                    var modelSelect = $('#model');
+                    modelSelect.empty().append('<option value="">Select a model</option>');
+                    $.each(response, function(index, model) {
+                        modelSelect.append('<option value="' + model + '">' + model + '</option>');
+                    });
+                }
+            });
+        });
+
+        $('#model').change(function() {
+            var selectedMake = $('#make').val();
+            var selectedModel = $(this).val();
+            $.ajax({
+                url: '/vehicle/years',
+                type: 'GET',
+                data:{
+                    make: selectedMake,
+                    model: selectedModel
+                },
+                success: function(response) {
+                    var yearSelect = $('#year');
+                    yearSelect.empty().append('<option value="">Select a year</option>');
+                    $.each(response, function(index, year) {
+                        yearSelect.append('<option value="' + year + '">' + year + '</option>');
+                    });
+                }
+            });
+        });
+
+        $('#year').change(function() {
+            var selectedMake = $('#make').val();
+            var selectedModel = $('#model').val();
+            var selectedYear = $(this).val();
+            $.ajax({
+                url: '/vehicle/engines',
+                type: 'GET',
+                data:{
+                    make: selectedMake,
+                    model: selectedModel,
+                    year: selectedYear
+                },
+                success: function(response) {
+                    var engineSelect = $('#engine');
+                    engineSelect.empty().append('<option value="">Select an engine</option>');
+                    $.each(response, function(key, engine) {
+                        engineSelect.append('<option value="' + key + '">' + engine + '</option>');
+                    });
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,20 +1,40 @@
 package com.kamilz12.vehiclemanagementsystem.service;
 
+import com.kamilz12.vehiclemanagementsystem.repository.VehicleRepository;
+import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.VehicleClient;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @Service
 public class VehicleService {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final VehicleClient vehicleClient;
+    private final VehicleRepository vehicleRepository;
+    public VehicleService(VehicleClient vehicleClient, VehicleRepository vehicleRepository) {
+        this.vehicleClient = vehicleClient;
+        this.vehicleRepository = vehicleRepository;
+    }
+    @SneakyThrows
+    public List<String> getMakes() {
+        return vehicleClient.importMakes();
+    }
+    @SneakyThrows
 
-    private static final String API_URL = "https://www.fueleconomy.gov/ws/rest/ympg/shared/vehicles";
-
-
-    public String getVehiclesByMakeAndModel(String make, String model) {
-        String url = String.format("%s?make=%s&model=%s", API_URL, make, model);
-        return restTemplate.getForObject(url, String.class);
+    public List<String> getModelByMake(String model) {
+        return vehicleClient.importModel(model);
+    }
+    @SneakyThrows
+    public Map<Integer,String> getEngineByMakeAndModel(String make, String model,String year){
+        return vehicleClient.importEngineAndIDByModelAndMake(make,model,year);
     }
 
+
+    public List<Integer> findAvailableYearsForMakeAndModel(String make, String model) {
+        return vehicleClient.findAvailableYearsForMakeAndModel(make,model);
+    }
 }
