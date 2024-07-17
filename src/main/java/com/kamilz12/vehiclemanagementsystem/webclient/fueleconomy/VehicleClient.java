@@ -38,7 +38,7 @@ public class VehicleClient {
         }
         String apiUrl = API_URL + "/vehicle/menu/year?make=" + make + "&model=" + model;
         List<Integer> years = new ArrayList<>();
-        FuelEconomyDTO response = restTemplate.getForObject(apiUrl, FuelEconomyDTO.class);
+        FuelEconomyDTO response =callGetMethod(apiUrl,FuelEconomyDTO.class);
         if (response != null && response.getMenuItem() != null) {
             CompletableFuture[] futures = response.getMenuItem().stream()
                     .map(item -> CompletableFuture.supplyAsync(() -> {
