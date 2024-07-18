@@ -5,10 +5,17 @@
     <title>Vehicle Confirmation</title>
 </head>
 <body>
+<h3>Saved!</h3><br>
 <span th:text="${vehicle.getMake()}"></span>
 <span th:text="${vehicle.getModel()}"></span>
 <span th:text="${vehicle.getYear()}"></span>
 <span th:text="${vehicle.getEngines()}"></span>
 <span th:text="${vehicle.getEngine_name()}"></span>
+<br>
+<a href="/">Go Home</a><br>
+<a href="/vehicle/createNewVehicle">Create new vehicle</a><br>
+<form action="#" th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout">
+</form>
 </body>
 </html>
