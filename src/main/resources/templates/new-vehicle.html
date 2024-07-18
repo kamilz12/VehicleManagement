@@ -5,13 +5,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-<form th:action="@{/processVehicleForm}" th:object="${vehicleCategory}" method="post">
+<form th:action="@{processVehicleForm}" th:object="${vehicleCategory}" method="post">
     <select id="make" th:field="*{make}">
         <option value="">Select a model</option>
         <option th:each="temp: ${makes}" th:value="${temp}" th:text="${temp}"></option>
     </select><br>
 
-    <select id="model" th:field="*{models}">
+    <select id="model" th:field="*{model}">
         <option value="">Select a model</option>
     </select><br>
     <select id="year" th:field="*{year}">
@@ -20,17 +20,18 @@
     <select id="engine" th:field="*{engines}">
         <option value="">Select an engine</option>
     </select><br>
+    <input type="hidden" id="engine_name" th:field="*{engine_name}">
     <input type="submit" value="Submit">
 </form>
 <script>
     $(document).ready(function() {
         $('#make').change(function() {
-            var selectedMake = $(this).val();
+            let selectedMake = $(this).val();
             $.ajax({
                 url: '/vehicle/models?make=' + selectedMake,
                 type: 'GET',
                 success: function(response) {
-                    var modelSelect = $('#model');
+                    let modelSelect = $('#model');
                     modelSelect.empty().append('<option value="">Select a model</option>');
                     $.each(response, function(index, model) {
                         modelSelect.append('<option value="' + model + '">' + model + '</option>');
@@ -40,8 +41,8 @@
         });
 
         $('#model').change(function() {
-            var selectedMake = $('#make').val();
-            var selectedModel = $(this).val();
+            let selectedMake = $('#make').val();
+            let selectedModel = $(this).val();
             $.ajax({
                 url: '/vehicle/years',
                 type: 'GET',
@@ -77,6 +78,13 @@
                     $.each(response, function(key, engine) {
                         engineSelect.append('<option value="' + key + '">' + engine + '</option>');
                     });
+
+// Assuming you want to set the engine name when an option is selected
+                    engineSelect.change(function() {
+                        var selectedEngineName = $(this).find("option:selected").text();
+                        $('#engine_name').val(selectedEngineName); // Set the engine name as the value of the input
+                    });
+
                 }
             });
         });

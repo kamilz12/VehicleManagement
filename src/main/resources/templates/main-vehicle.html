@@ -1,0 +1,12 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en">
+<body>
+
+<h3>Welcome!</h3>
+<a href="/">Go Home</a>
+<a href="/vehicle/createNewVehicle">Create new vehicle</a>
+<form action="#" th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout">
+</form>
+</body>
+</html>

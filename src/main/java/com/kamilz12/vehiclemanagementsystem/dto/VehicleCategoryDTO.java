@@ -12,7 +12,8 @@ public class VehicleCategoryDTO {
 
     private Integer year;
     private String make;
-    private List<String> models;
-    private List<String> engines;
+    private String model;
+    private String engines;
+    private String engine_name;
 
 }

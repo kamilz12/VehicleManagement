@@ -1,5 +1,6 @@
 package com.kamilz12.vehiclemanagementsystem.service;
 
+import com.kamilz12.vehiclemanagementsystem.model.vehicle.UserVehicle;
 import com.kamilz12.vehiclemanagementsystem.repository.VehicleRepository;
 import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.VehicleClient;
 import lombok.SneakyThrows;
@@ -36,5 +37,9 @@ public class VehicleService {
 
     public List<Integer> findAvailableYearsForMakeAndModel(String make, String model) {
         return vehicleClient.findAvailableYearsForMakeAndModel(make,model);
+    }
+
+    public void save(UserVehicle userVehicle){
+        vehicleRepository.save(userVehicle);
     }
 }

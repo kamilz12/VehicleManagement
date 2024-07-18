@@ -88,16 +88,21 @@ public class VehicleClient {
     }
 
     public Map<Integer, String> importEngineAndIDByModelAndMake(String make, String vehicleModel, String year) {
-        FuelEconomyDTO fuelEconomyDTO = callGetMethod(API_URL + "/vehicle/menu/options?make={make}&model={vehicleModel}&year={year}", FuelEconomyDTO.class, make, vehicleModel, year);
         Map<Integer, String> engineMap = new HashMap<>();
-        if (fuelEconomyDTO != null && fuelEconomyDTO.getMenuItem() != null) {
-            for (FuelEconomyMakeModelEngineDTO item : fuelEconomyDTO.getMenuItem()) {
-                engineMap.put(Integer.parseInt(item.getValue()), item.getText());
+        try {
+            FuelEconomyDTO fuelEconomyDTO = callGetMethod(API_URL + "/vehicle/menu/options?make={make}&model={vehicleModel}&year={year}", FuelEconomyDTO.class, make, vehicleModel, year);
+            if (fuelEconomyDTO != null && fuelEconomyDTO.getMenuItem() != null) {
+                for (FuelEconomyMakeModelEngineDTO item : fuelEconomyDTO.getMenuItem()) {
+                    engineMap.put(Integer.parseInt(item.getValue()), item.getText());
+                }
             }
+        } catch (NumberFormatException e) {
+            log.error("Error parsing integer value", e);
+        } catch (Exception e) {
+            log.error("Error importing engine and ID by model and make", e);
         }
         return engineMap;
     }
-
     // Modify the callGetMethod to include try-catch block for error handling
     private <T> T callGetMethod(String url, Class<T> responseType, Object... objects) {
         try {

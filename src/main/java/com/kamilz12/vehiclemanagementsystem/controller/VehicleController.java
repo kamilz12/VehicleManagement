@@ -1,6 +1,7 @@
 package com.kamilz12.vehiclemanagementsystem.controller;
 
 import com.kamilz12.vehiclemanagementsystem.dto.VehicleCategoryDTO;
+import com.kamilz12.vehiclemanagementsystem.model.vehicle.UserVehicle;
 import com.kamilz12.vehiclemanagementsystem.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,10 @@ public class VehicleController {
     public VehicleController(VehicleService vehicleService) {
         this.vehicleService = vehicleService;
     }
-
+    @GetMapping("")
+    public String mainPageVehicle(){
+        return "main-vehicle";
+    }
     @GetMapping("/createNewVehicle")
     public String createNewVehicle(Model model){
         VehicleCategoryDTO vehicleCategoryDTO = new VehicleCategoryDTO();
@@ -53,5 +57,28 @@ public class VehicleController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(years);
+    }
+
+    @PostMapping("/processVehicleForm")
+    public String processVehicleForm(@ModelAttribute VehicleCategoryDTO vehicleCategoryDTO, Model model){
+        // Use vehicleForm data to perform operations, e.g., save to database
+        String make = vehicleCategoryDTO.getMake();
+        String vehicleModel = vehicleCategoryDTO.getModel();
+        Integer engine = Integer.parseInt(vehicleCategoryDTO.getEngines());
+        Integer year =Integer.parseInt(String.valueOf(vehicleCategoryDTO.getYear()));
+        String engineName = vehicleCategoryDTO.getEngine_name();
+        UserVehicle userVehicle = new UserVehicle();
+        System.out.println(make);
+        System.out.println(vehicleModel);
+        System.out.println(year);
+
+        userVehicle.setMake(make);
+        userVehicle.setYear(year);
+        userVehicle.setModel(vehicleModel);
+        userVehicle.setInternRestId(engine);
+        userVehicle.setEngineName(engineName);
+        vehicleService.save(userVehicle);
+        model.addAttribute("vehicle", vehicleCategoryDTO);
+        return "vehicle-confirmation";
     }
 }
