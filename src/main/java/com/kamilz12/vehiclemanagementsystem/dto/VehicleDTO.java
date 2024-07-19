@@ -4,16 +4,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
-public class VehicleCategoryDTO {
+@Builder
+public class VehicleDTO {
 
     private Integer year;
     private String make;
     private String model;
-    private String engines;
+    private Integer engineInternId;
     private String engine_name;
 
 }

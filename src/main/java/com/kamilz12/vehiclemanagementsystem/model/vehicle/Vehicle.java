@@ -4,11 +4,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @Entity
-@Table(name = "uservehicle")
-public class UserVehicle {
+@Table (name = "vehicledata")
+public class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -22,7 +22,7 @@ public class UserVehicle {
     private Integer internRestId;
     @Column(name = "enginename")
     private String engineName;
-    public UserVehicle() {
+    public Vehicle() {
 
     }
 }

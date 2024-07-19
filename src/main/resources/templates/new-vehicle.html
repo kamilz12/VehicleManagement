@@ -17,7 +17,7 @@
     <select id="year" th:field="*{year}">
         <option value="">Select a year</option>
     </select><br>
-    <select id="engine" th:field="*{engines}">
+    <select id="engine" th:field="*{getEngineInternId}">
         <option value="">Select an engine</option>
     </select><br>
     <input type="hidden" id="engine_name" th:field="*{engine_name}">
@@ -51,7 +51,7 @@
                     model: selectedModel
                 },
                 success: function(response) {
-                    var yearSelect = $('#year');
+                    let yearSelect = $('#year');
                     yearSelect.empty().append('<option value="">Select a year</option>');
                     $.each(response, function(index, year) {
                         yearSelect.append('<option value="' + year + '">' + year + '</option>');
@@ -61,9 +61,9 @@
         });
 
         $('#year').change(function() {
-            var selectedMake = $('#make').val();
-            var selectedModel = $('#model').val();
-            var selectedYear = $(this).val();
+            let selectedMake = $('#make').val();
+            let selectedModel = $('#model').val();
+            let selectedYear = $(this).val();
             $.ajax({
                 url: '/vehicle/engines',
                 type: 'GET',
@@ -73,7 +73,7 @@
                     year: selectedYear
                 },
                 success: function(response) {
-                    var engineSelect = $('#engine');
+                    let engineSelect = $('#engine');
                     engineSelect.empty().append('<option value="">Select an engine</option>');
                     $.each(response, function(key, engine) {
                         engineSelect.append('<option value="' + key + '">' + engine + '</option>');
@@ -81,7 +81,7 @@
 
 // Assuming you want to set the engine name when an option is selected
                     engineSelect.change(function() {
-                        var selectedEngineName = $(this).find("option:selected").text();
+                        let selectedEngineName = $(this).find("option:selected").text();
                         $('#engine_name').val(selectedEngineName); // Set the engine name as the value of the input
                     });
 

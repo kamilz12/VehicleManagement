@@ -1,11 +1,16 @@
 package com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy;
 
+import com.kamilz12.vehiclemanagementsystem.configuration.AppConstants;
+import com.kamilz12.vehiclemanagementsystem.dto.VehicleDTO;
+import com.kamilz12.vehiclemanagementsystem.model.vehicle.Vehicle;
 import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.dto.FuelEconomyDTO;
-import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.dto.FuelEconomyMakeModelEngineDTO;
+import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.dto.FuelEconomyMenuItem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.ResponseEntity;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -17,111 +22,120 @@ import java.util.stream.Collectors;
 @Slf4j
 public class VehicleClient {
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String API_URL = "https://www.fueleconomy.gov/ws/rest";
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final ExecutorService executor = Executors.newFixedThreadPool(10); // Customize the thread pool size based on your requirements
+
+    private final String apiUrl = AppConstants.API_URL;
+    private final int threadPoolSize = AppConstants.THREAD_POOL_SIZE;
+
+    private final ExecutorService executor = Executors.newFixedThreadPool(threadPoolSize);
     private final Map<String, List<Integer>> yearsCache = new HashMap<>();
 
-    public List<Integer> findAvailableYearsForMakeAndModel(String make, String model) {
-        String cacheKey = make + "-" + model;
-        // Check cache first
-        if (yearsCache.containsKey(cacheKey)) {
-            return yearsCache.get(cacheKey);
+    public List<Integer> fetchYears() {
+        if (yearsCache.containsKey("years")) {
+            return yearsCache.get("years");
         }
 
-        String apiUrl = API_URL + "/vehicle/menu/year?make=" + make + "&model=" + model;
-        List<Integer> years = new ArrayList<>();
-        try {
-            FuelEconomyDTO response = callGetMethod(apiUrl, FuelEconomyDTO.class);
-            if (response != null && response.getMenuItem() != null) {
-                CompletableFuture[] futures = response.getMenuItem().stream()
-                        .map(item -> CompletableFuture.supplyAsync(() -> {
-                                    int year = Integer.parseInt(item.getValue());
-                                    Map<Integer, String> engineOptions = importEngineAndIDByModelAndMake(make, model, String.valueOf(year));
-                                    return engineOptions != null && !engineOptions.isEmpty() ? year : null;
-                                }, executor)
-                                .exceptionally(ex -> {
-                                    log.error("Error processing year " + item.getValue(), ex);
-                                    return null;
-                                }))
-                        .toArray(CompletableFuture[]::new);
+        List<Integer> years = fetchFromApi(apiUrl + "/vehicle/menu/year", FuelEconomyDTO.class)
+                .map(dto -> dto.getMenuItem().stream()
+                        .map(item -> Integer.parseInt(item.getValue()))
+                        .collect(Collectors.toList()))
+                .orElseGet(() -> {
+                    log.error("Received null or empty response for years");
+                    return new ArrayList<>();
+                });
 
-                CompletableFuture.allOf(futures).join(); // Wait for all futures to complete
-
-                years = Arrays.stream(futures)
-                        .map(future -> ((CompletableFuture<Integer>) future).join())
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
-            }
-
-            // Cache the result
-            yearsCache.put(cacheKey, years);
-        } catch (Exception e) {
-            log.error("Error finding available years for make and model: " + make + " " + model, e);
-        }
+        yearsCache.put("years", years);
         return years;
     }
 
-    public List<String> importMakes() {
-        List<String> vehicleMakes = new ArrayList<>();
-        try {
-            FuelEconomyDTO fuelEconomyDTO = callGetMethod(API_URL + "/ympg/shared/menu/make", FuelEconomyDTO.class);
-            if (fuelEconomyDTO != null && fuelEconomyDTO.getMenuItem() != null) {
-                for (FuelEconomyMakeModelEngineDTO item : fuelEconomyDTO.getMenuItem()) {
-                    vehicleMakes.add(item.getValue());
-                }
-            }
-        } catch (Exception e) {
-            log.error("Error importing makes", e);
-        }
-        return vehicleMakes;
+    public List<VehicleDTO> fetchVehicles() {
+        List<VehicleDTO> vehicles = Collections.synchronizedList(new ArrayList<>());
+        List<String> makes = fetchMakes();
+        List<Integer> years = fetchYears();
+
+        List<CompletableFuture<Void>> futures = years.stream()
+                .flatMap(year -> makes.stream().map(make -> fetchAndAddVehiclesForYearAndMake(year, make, vehicles)))
+                .toList();
+
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        return vehicles;
     }
 
-    public List<String> importModel(String make) {
-        List<String> models = new ArrayList<>();
-        try {
-            String url = API_URL + "/ympg/shared/menu/model?make=" + make;
-            FuelEconomyDTO fuelEconomyDTO = callGetMethod(url, FuelEconomyDTO.class);
-            if (fuelEconomyDTO != null && fuelEconomyDTO.getMenuItem() != null) {
-                for (FuelEconomyMakeModelEngineDTO item : fuelEconomyDTO.getMenuItem()) {
-                    models.add(item.getValue());
-                }
-            }
-        } catch (Exception e) {
-            log.error("Error importing models for make: " + make, e);
-        }
-        return models;
+    private CompletableFuture<Void> fetchAndAddVehiclesForYearAndMake(Integer year, String make, List<VehicleDTO> vehicles) {
+        return CompletableFuture.runAsync(() -> {
+
+            List<String> models = fetchModels(make, year.toString());
+            models.forEach(model -> {
+                Map<Integer, String> engines = importEngineAndIDByModelAndMake(make, model, year);
+                engines.forEach((engineId, engineName) -> {
+                    if (year != null && make != null && model != null && engineName != null && engineId != null) {
+                        vehicles.add(VehicleDTO.builder().year(year).make(make).model(model).engine_name(engineName).engineInternId(engineId).build());
+                    } else {
+                        log.error("One of the values is null: year={}, make={}, model={}, engineName={}, engineId={}",
+                                year, make, model, engineName, engineId);
+                    }
+                });
+            });
+        }, executor);
     }
 
-    public Map<Integer, String> importEngineAndIDByModelAndMake(String make, String vehicleModel, String year) {
-        Map<Integer, String> engineMap = new HashMap<>();
-        try {
-            String url = API_URL + "/vehicle/menu/options?make=" + make + "&model=" + vehicleModel + "&year=" + year;
-            FuelEconomyDTO fuelEconomyDTO = callGetMethod(url, FuelEconomyDTO.class);
-            if (fuelEconomyDTO != null && fuelEconomyDTO.getMenuItem() != null) {
-                for (FuelEconomyMakeModelEngineDTO item : fuelEconomyDTO.getMenuItem()) {
-                    engineMap.put(Integer.parseInt(item.getValue()), item.getText());
-                }
-            }
-        } catch (NumberFormatException e) {
-            log.error("Error parsing integer value", e);
-        } catch (Exception e) {
-            log.error("Error importing engine and ID by model and make", e);
-        }
-        return engineMap;
+    public Vehicle vehicleDTOtoVehicleDAO(VehicleDTO vehicleDTO) {
+        Vehicle vehicleDAO = new Vehicle();
+        vehicleDAO.setEngineName(vehicleDTO.getEngine_name());
+        vehicleDAO.setInternRestId(vehicleDTO.getEngineInternId());
+        vehicleDAO.setYear(vehicleDTO.getYear());
+        vehicleDAO.setMake(vehicleDTO.getMake());
+        vehicleDAO.setModel(vehicleDTO.getModel());
+        return vehicleDAO;
     }
 
-    // Modify the callGetMethod to include try-catch block for error handling
-    private <T> T callGetMethod(String url, Class<T> responseType, Object... objects) {
+    public List<String> fetchMakes() {
+        return fetchFromApi(apiUrl + "/ympg/shared/menu/make", FuelEconomyDTO.class)
+                .map(dto -> dto.getMenuItem().stream()
+                        .map(FuelEconomyMenuItem::getValue)
+                        .collect(Collectors.toList()))
+                .orElseGet(() -> {
+                    log.error("Error importing makes");
+                    return new ArrayList<>();
+                });
+    }
+
+    public List<String> fetchModels(String make, String year) {
+        String url = String.format("%s/vehicle/menu/model?year=%s&make=%s", apiUrl, year, make);
+        return fetchFromApi(url, FuelEconomyDTO.class)
+                .map(dto -> dto.getMenuItem().stream()
+                        .map(FuelEconomyMenuItem::getValue)
+                        .collect(Collectors.toList()))
+                .orElseGet(() -> {
+                    log.error("Error importing models for make: {}, year: {}", make, year);
+                    return new ArrayList<>();
+                });
+    }
+
+    public Map<Integer, String> importEngineAndIDByModelAndMake(String make, String model, Integer year) {
+        String url = String.format("%s/vehicle/menu/options?year=%d&make=%s&model=%s", apiUrl, year, make, model);
+        return fetchFromApi(url, FuelEconomyDTO.class)
+                .map(dto -> dto.getMenuItem().stream()
+                        .collect(Collectors.toMap(
+                                item -> Integer.parseInt(item.getValue()),
+                                FuelEconomyMenuItem::getText)))
+                .orElseGet(() -> {
+                    log.error("Error importing engines for make, model, year: {}, {}, {}", make, model, year);
+                    return new HashMap<>();
+                });
+    }
+
+    private <T> Optional<T> fetchFromApi(String url, Class<T> responseType, Object... uriVariables) {
         try {
-            return restTemplate.getForObject(url, responseType, objects);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class, uriVariables);
+            String jsonResponse = responseEntity.getBody();
+            return Optional.ofNullable(objectMapper.readValue(jsonResponse, responseType));
         } catch (RestClientException e) {
-            log.error("Error calling GET method for URL: " + url, e);
-            // Consider throwing a custom exception or returning a default object
-            throw new CustomServiceException("Failed to fetch data from API", e);
+            log.error("Error calling external API: {}", url, e);
         } catch (Exception e) {
-            log.error("Unexpected error calling GET method for URL: " + url, e);
-            throw new CustomServiceException("Unexpected error occurred", e);
+            log.error("Error processing response from external API: {}", url, e);
         }
+        return Optional.empty();
     }
 }
