@@ -1,18 +1,7 @@
 package com.kamilz12.vehiclemanagementsystem.controller;
 
-import com.kamilz12.vehiclemanagementsystem.dto.VehicleDTO;
-import com.kamilz12.vehiclemanagementsystem.model.vehicle.UserVehicle;
-import com.kamilz12.vehiclemanagementsystem.model.vehicle.Vehicle;
-import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.repository.VehicleClientRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/vehicle")
