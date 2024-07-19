@@ -4,7 +4,6 @@ import com.kamilz12.vehiclemanagementsystem.dto.VehicleDTO;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Vehicle;
 import com.kamilz12.vehiclemanagementsystem.repository.VehicleRepository;
 import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.repository.VehicleClientRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ public class VehicleClientService {
         this.vehicleRepository = vehicleRepository;
         this.vehicleClientRepository = vehicleClientRepository;
     }
-    @PostConstruct
+    //@PostConstruct
         public void fetchAndSaveALlVehiclesDataFromAPI(){
             List<VehicleDTO> vehicleDTOList = vehicleClientRepository.fetchAllDataFromDatabase();
             List <Vehicle> vehiclesFromDatabase = vehicleRepository.findAll();

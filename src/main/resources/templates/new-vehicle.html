@@ -5,31 +5,41 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-<form th:action="@{processVehicleForm}" th:object="${vehicleCategory}" method="post">
-    <select id="make" th:field="*{make}">
+
+<form th:action="@{processVehicleForm}" th:object="${vehicle}" method="post">
+    <label for="make"></label><select id="make" th:field="*{make}">
         <option value="">Select a model</option>
         <option th:each="temp: ${makes}" th:value="${temp}" th:text="${temp}"></option>
     </select><br>
 
-    <select id="model" th:field="*{model}">
+    <label for="model"></label><select id="model" th:field="*{model}">
         <option value="">Select a model</option>
     </select><br>
-    <select id="year" th:field="*{year}">
+    <label for="year"></label><select id="year" th:field="*{year}">
         <option value="">Select a year</option>
     </select><br>
-    <select id="engine" th:field="*{getEngineInternId}">
+    <label for="engine"></label><select id="engine" th:field="*{engineName}">
         <option value="">Select an engine</option>
     </select><br>
-    <input type="hidden" id="engine_name" th:field="*{engine_name}">
+    <input type="hidden" id="internRestId" th:field="*{internRestId}">
     <input type="submit" value="Submit">
 </form>
+
 <script>
+
+
+
     $(document).ready(function() {
+
+
         $('#make').change(function() {
             let selectedMake = $(this).val();
             $.ajax({
-                url: '/vehicle/models?make=' + selectedMake,
+                url: '/vehicle/models',
                 type: 'GET',
+                data: {
+                    make: selectedMake
+                },
                 success: function(response) {
                     let modelSelect = $('#model');
                     modelSelect.empty().append('<option value="">Select a model</option>');
@@ -39,6 +49,7 @@
                 }
             });
         });
+
 
         $('#model').change(function() {
             let selectedMake = $('#make').val();
@@ -64,6 +75,7 @@
             let selectedMake = $('#make').val();
             let selectedModel = $('#model').val();
             let selectedYear = $(this).val();
+
             $.ajax({
                 url: '/vehicle/engines',
                 type: 'GET',
@@ -74,18 +86,35 @@
                 },
                 success: function(response) {
                     let engineSelect = $('#engine');
-                    engineSelect.empty().append('<option value="">Select an engine</option>');
-                    $.each(response, function(key, engine) {
-                        engineSelect.append('<option value="' + key + '">' + engine + '</option>');
+                    engineSelect.empty().append('<option value="">Select a engine</option>');
+                    $.each(response, function (index, engine) {
+                        engineSelect.append('<option value="' + engine + '">' + engine + '</option>');
                     });
-
-// Assuming you want to set the engine name when an option is selected
-                    engineSelect.change(function() {
-                        let selectedEngineName = $(this).find("option:selected").text();
-                        $('#engine_name').val(selectedEngineName); // Set the engine name as the value of the input
-                    });
-
                 }
+
+            });
+        });
+
+        $('#engine').change(function() {
+            let selectedMake = $('#make').val();
+            let selectedModel = $('#model').val();
+            let selectedYear = $('#year').val();
+            let selectedEngine = $(this).val();
+
+            $.ajax({
+                url: '/vehicle/internRestId',
+                type: 'GET',
+                data:{
+                    make: selectedMake,
+                    model: selectedModel,
+                    year: selectedYear,
+                    engine: selectedEngine
+                },
+                success: function(response) {
+                    let engineSelect = $('#internRestId');
+                    engineSelect.empty().val(response);
+                }
+
             });
         });
     });
