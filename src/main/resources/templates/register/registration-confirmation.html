@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Registration Confirmation</title>
+</head>
+
+<body>
+
+	<h2>User registered successfully!</h2>
+
+	<ul>
+		<li th:text="'User name: ' + ${webUser.username}"></li>
+
+	</ul>
+
+	<hr>
+	
+	<a th:href="@{/showMyLoginPage}">Login with new user name</a>
+	
+</body>
+
+</html>
