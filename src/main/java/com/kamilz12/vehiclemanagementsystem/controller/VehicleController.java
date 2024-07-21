@@ -1,6 +1,10 @@
 package com.kamilz12.vehiclemanagementsystem.controller;
 
+import com.kamilz12.vehiclemanagementsystem.model.vehicle.User;
+import com.kamilz12.vehiclemanagementsystem.model.vehicle.UserVehicle;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Vehicle;
+import com.kamilz12.vehiclemanagementsystem.service.UserService;
+import com.kamilz12.vehiclemanagementsystem.service.UserVehicleService;
 import com.kamilz12.vehiclemanagementsystem.service.VehicleService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -22,15 +24,19 @@ public class VehicleController {
     private final VehicleService vehicleService;
     List <Vehicle> vehicles;
 
-    public VehicleController(VehicleService vehicleService) {
+    private final UserVehicleService userVehicleService;
+    private final UserService userService;
+    public VehicleController(VehicleService vehicleService, UserVehicleService userVehicleService, UserService userService) {
         this.vehicleService = vehicleService;
+        this.userVehicleService = userVehicleService;
+        this.userService = userService;
     }
     @PostConstruct
     public void readAllVehicles(){
         vehicles = vehicleService.findAll();
     }
 
-    @GetMapping("")
+    @GetMapping("/**")
     public String mainPageVehicle(){
         return "main-vehicle";
     }
@@ -42,7 +48,6 @@ public class VehicleController {
                 .distinct()
                 .map(Vehicle::getMake).
                 collect(Collectors.toCollection(TreeSet::new));
-        log.info(vehicleService.findMakes().toString());
         model.addAttribute("vehicle", vehicle);
         model.addAttribute("makes", makes);
         return "new-vehicle";
@@ -63,7 +68,8 @@ public class VehicleController {
                 .filter(vehicle -> vehicle.getMake().equals(make))
                 .filter(vehicle -> vehicle.getModel().equals(model))
                 .map(Vehicle::getYear)
-                .collect(Collectors.toCollection(TreeSet::new));
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         if (years.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -106,7 +112,12 @@ public class VehicleController {
 
     @PostMapping("/processVehicleForm")
     public String processVehicleForm(@ModelAttribute Vehicle vehicle, Model model){
-        model.addAttribute("vehicle", vehicle);
+        User user = userService.findUserById(userService.findLoggedUserIdByUsername());
+        vehicle.addUser(user);
+        vehicle.setInternRestId(55555);
+        vehicle.getUserVehicles().forEach(userVehicle -> userVehicle.setMileage(0));
+        vehicle.getUserVehicles().forEach(userVehicle -> userVehicle.setVin("12345678901234567"));
+        vehicleService.save(vehicle);
         return "vehicle-confirmation";
     }
 

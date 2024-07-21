@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-
 public interface VehicleRepository extends JpaRepository<Vehicle,Integer> {
     Vehicle findByInternRestId(Integer internRestId);
     @Query("SELECT DISTINCT v.make FROM Vehicle v ORDER BY v.make ASC")
