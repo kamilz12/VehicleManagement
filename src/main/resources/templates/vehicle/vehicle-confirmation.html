@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
@@ -33,7 +34,17 @@
 </nav>
 <br /><br />
 <div class="container">
-
+    <h3>Saved!</h3><br>
+    <span th:text="${userVehicle.vehicle.getMake()}"></span>
+    <span th:text="${userVehicle.vehicle.getModel()}"></span>
+    <span th:text="${userVehicle.vehicle.getYear()}"></span>
+    <span th:text="${userVehicle.vehicle.getEngineName()}"></span>
+    <br>
+    <a href="/static">Go Home</a><br>
+    <a href="/vehicle/createNewVehicle">Create new vehicle</a><br>
+    <form action="#" th:action="@{/logout}" method="post">
+        <input type="submit" value="Logout">
+    </form>
 </div>
 </body>
 </html>

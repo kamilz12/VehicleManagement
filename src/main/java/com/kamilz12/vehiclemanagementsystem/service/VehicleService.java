@@ -33,10 +33,13 @@ public class VehicleService {
         return vehicleRepository.findAllDistinctEnginesByMakeModelYear(make,model,year);
     }
 
-    public Integer findInternRestID(String make, String model, Integer year, String engine){
+    public Integer findInternRestId(String make, String model, Integer year, String engine){
         return vehicleRepository.findDistinctInternRestIdByMakeModelYearEngineName(make,model,year,engine);
     }
 
+    public Vehicle findByInternRestId(Integer internRestId){
+        return vehicleRepository.findByInternRestId(internRestId);
+    }
 
     public void save(Vehicle vehicle){
         this.vehicleRepository.save(vehicle);

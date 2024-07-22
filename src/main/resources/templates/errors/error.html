@@ -1,10 +1,10 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <html lang="en">
 <body>
-
-<h3>Welcome!</h3>
-<a href="/">Go Home</a>
-<a href="/vehicle/createNewVehicle">Create new vehicle</a>
+<h1>Something went wrong! </h1>
+<h2>Our Engineers are on it</h2>
+<h3 th:text="${message}"></h3>
+<a href="/static">Go Home</a>
 <form action="#" th:action="@{/logout}" method="post">
     <input type="submit" value="Logout">
 </form>

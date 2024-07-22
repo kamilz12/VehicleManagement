@@ -6,11 +6,12 @@ import com.kamilz12.vehiclemanagementsystem.model.vehicle.Vehicle;
 import com.kamilz12.vehiclemanagementsystem.service.UserService;
 import com.kamilz12.vehiclemanagementsystem.service.UserVehicleService;
 import com.kamilz12.vehiclemanagementsystem.service.VehicleService;
-import jakarta.annotation.PostConstruct;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -24,33 +25,35 @@ public class VehicleController {
     private final VehicleService vehicleService;
     List <Vehicle> vehicles;
 
+
     private final UserVehicleService userVehicleService;
     private final UserService userService;
     public VehicleController(VehicleService vehicleService, UserVehicleService userVehicleService, UserService userService) {
-        this.vehicleService = vehicleService;
         this.userVehicleService = userVehicleService;
         this.userService = userService;
-    }
-    @PostConstruct
-    public void readAllVehicles(){
-        vehicles = vehicleService.findAll();
+        this.vehicleService = vehicleService;
     }
 
-    @GetMapping("/**")
+    @GetMapping("**")
     public String mainPageVehicle(){
-        return "main-vehicle";
+        return "vehicle/main-vehicle";
     }
 
     @GetMapping("/createNewVehicle")
     public String createNewVehicle(Model model){
-        Vehicle vehicle = new Vehicle();
+        vehicles = vehicleService.findAll();
+        UserVehicle userVehicle = new UserVehicle();
+        model.addAttribute("userVehicle", userVehicle);
+        return "vehicle/new-vehicle";
+    }
+
+    @GetMapping("/makes")
+    public ResponseEntity<Set<String>> getMakes() {
         Set<String> makes = vehicles.stream()
                 .distinct()
                 .map(Vehicle::getMake).
                 collect(Collectors.toCollection(TreeSet::new));
-        model.addAttribute("vehicle", vehicle);
-        model.addAttribute("makes", makes);
-        return "new-vehicle";
+        return ResponseEntity.ok(makes);
     }
 
     @GetMapping("/models")
@@ -63,7 +66,9 @@ public class VehicleController {
         return ResponseEntity.ok(modelsSet);
     }
     @GetMapping("/years")
-    public ResponseEntity<Set<Integer>> getAvailableYears(@RequestParam String make, @RequestParam String model) {
+    @ResponseBody
+    public ResponseEntity<Set<Integer>> getAvailableYears(@RequestParam String make,
+                                                          @RequestParam String model) {
         Set<Integer> years = vehicles.stream()
                 .filter(vehicle -> vehicle.getMake().equals(make))
                 .filter(vehicle -> vehicle.getModel().equals(model))
@@ -77,9 +82,10 @@ public class VehicleController {
     }
 
     @GetMapping("/engines")
+    @ResponseBody
     public ResponseEntity<Set<String>> getEnginesByModelAndMake(@RequestParam String make,
                                                                 @RequestParam String model,
-                                                                @RequestParam(required = false) Integer year) {
+                                                                @RequestParam Integer year) {
         Set <String> engines = vehicles.stream()
                 .filter(vehicle -> vehicle.getMake().equals(make))
                 .filter(vehicle -> vehicle.getModel().equals(model))
@@ -93,6 +99,7 @@ public class VehicleController {
     }
 
     @GetMapping("/internRestId")
+    @ResponseBody
     public ResponseEntity<Integer> getInternRestID(@RequestParam String make,
                                                    @RequestParam String model,
                                                    @RequestParam Integer year,
@@ -110,15 +117,30 @@ public class VehicleController {
     return ResponseEntity.ok(internRestId);
     }
 
+
+
     @PostMapping("/processVehicleForm")
-    public String processVehicleForm(@ModelAttribute Vehicle vehicle, Model model){
-        User user = userService.findUserById(userService.findLoggedUserIdByUsername());
-        vehicle.addUser(user);
-        vehicle.setInternRestId(55555);
-        vehicle.getUserVehicles().forEach(userVehicle -> userVehicle.setMileage(0));
-        vehicle.getUserVehicles().forEach(userVehicle -> userVehicle.setVin("12345678901234567"));
-        vehicleService.save(vehicle);
-        return "vehicle-confirmation";
+    public String processVehicleForm(@Valid @ModelAttribute("userVehicle") UserVehicle userVehicle, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return "vehicle/new-vehicle";
+        }
+            Vehicle vehicle = vehicleService.findByInternRestId(userVehicle.getVehicle().getInternRestId());
+            log.info(String.valueOf(vehicle.getId()));
+            User user = userService.findUserById(userService.findLoggedUserIdByUsername());
+            userVehicle.setUser(user);
+            userVehicle.setVehicle(vehicle);
+            userVehicle.setOwned(true);
+            userVehicleService.save(userVehicle);
+            return "vehicle/vehicle-confirmation";
+
     }
+
+    @GetMapping("/showUserVehicles")
+    public String showUserVehicles(Model model){
+        List <UserVehicle> userVehicles = userVehicleService.findAll();
+        model.addAttribute("userVehicleList",userVehicles);
+        return "vehicle/user-vehicles-list";
+    }
+
 
 }

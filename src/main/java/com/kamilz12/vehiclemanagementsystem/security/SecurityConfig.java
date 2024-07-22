@@ -73,7 +73,7 @@ public class SecurityConfig {
                                 .successHandler(customAuthenticationSuccessHandler)
                                 .permitAll()
                 )
-                .logout(logout -> logout.permitAll()
+                .logout(LogoutConfigurer::permitAll
                 )
                 .exceptionHandling(configurer ->
                         configurer.accessDeniedPage("/access-denied")
@@ -81,6 +81,5 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 
 }

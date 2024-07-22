@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/register")
 public class RegistrationController {
 
-	private Logger logger = Logger.getLogger(getClass().getName());
+	private final Logger logger = Logger.getLogger(getClass().getName());
 
-    private UserService userService;
+    private final UserService userService;
 
 	@Autowired
 	public RegistrationController(UserService userService) {
@@ -40,13 +40,14 @@ public class RegistrationController {
 		
 		dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
 	}	
-	
+
+
 	@GetMapping("/showRegistrationForm")
 	public String showMyLoginPage(Model theModel) {
 		
 		theModel.addAttribute("webUser", new UserDTO());
 		
-		return "register/registration-form";
+		return "registerAndLogin/registration-form";
 	}
 
 	@PostMapping("/processRegistrationForm")
@@ -60,7 +61,7 @@ public class RegistrationController {
 		
 		// form validation
 		 if (theBindingResult.hasErrors()){
-			 return "register/registration-form";
+			 return "registerAndLogin/registration-form";
 		 }
 
 		// check the database if user already exists
@@ -70,7 +71,7 @@ public class RegistrationController {
 			theModel.addAttribute("registrationError", "User name already exists.");
 
 			logger.warning("User name already exists.");
-        	return "register/registration-form";
+        	return "registerAndLogin/registration-form";
         }
         
         // create user account and store in the databse
@@ -81,6 +82,6 @@ public class RegistrationController {
 		// place user in the web http session for later use
 		session.setAttribute("user", userDTO);
 
-        return "register/registration-confirmation";
+        return "registerAndLogin/registration-confirmation";
 	}
 }

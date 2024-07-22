@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="">
 
 <head>
     <title>Registration Form</title>
@@ -27,7 +27,7 @@
                 <div class="card-text">
 
                     <!-- Registration Form -->
-                    <form action="#" th:action="@{/register/processRegistrationForm}"
+                    <form action="#" th:action="@{/register/showRegistrationForm}"
                           th:object="${webUser}"
                           method="POST" class="form-horizontal">
 
@@ -52,7 +52,9 @@
 
                         <!-- User name -->
                         <div style="margin-bottom: 25px" class="input-group">
-                            <input type="text" th:field="*{username}" placeholder="username (*)" class="form-control" />
+                            <label>
+                                <input type="text" th:field="*{username}" placeholder="username (*)" class="form-control" />
+                            </label>
                         </div>
 
                         <div th:if="${#fields.hasErrors('username')}"
@@ -64,7 +66,9 @@
 
                         <!-- Password -->
                         <div style="margin-bottom: 25px" class="input-group">
-                            <input type="password" th:field="*{password}" placeholder="Password (*)" class="form-control" />
+                            <label>
+                                <input type="password" th:field="*{password}" placeholder="Password (*)" class="form-control" />
+                            </label>
                         </div>
 
                         <div th:if="${#fields.hasErrors('password')}"

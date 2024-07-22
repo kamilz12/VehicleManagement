@@ -1,6 +1,7 @@
 package com.kamilz12.vehiclemanagementsystem.model.vehicle;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,8 +18,10 @@ public class Role {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    @NotNull(message = "Value can't be null")
     private String authority;
 
+    @NotNull(message = "Value can't be null")
     @ManyToMany(mappedBy = "roles")
     private List<User> users;
 

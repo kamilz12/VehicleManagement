@@ -1,6 +1,7 @@
 package com.kamilz12.vehiclemanagementsystem.model.vehicle;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,18 +15,28 @@ public class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-
     private Long id;
+
+    @NotNull(message = "Value can't be null")
     @Column(name = "make", nullable = false)
     private String make;
+
+    @NotNull(message = "Value can't be null")
     @Column(name = "model", nullable = false)
     private String model;
+
+    @NotNull(message = "Value can't be null")
     @Column(name = "year", nullable = false)
     private Integer year;
+
+    @NotNull(message = "Value can't be null")
     @Column(name = "intern_rest_id", nullable = false)
     private Integer internRestId;
+
+    @NotNull(message = "Value can't be null")
     @Column(name = "enginename", nullable = false)
     private String engineName;
+
     public Vehicle() {
 
     }

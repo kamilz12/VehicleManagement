@@ -1,6 +1,7 @@
 package com.kamilz12.vehiclemanagementsystem.model.vehicle;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,12 +20,16 @@ public class User {
     @Column(name = "id")
     private Long id;
 
+    @NotNull(message = "Value can't be null")
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
+    @NotNull(message = "Value can't be null")
     @Column(name = "password", nullable = false)
     private String password;
 
+
+    @NotNull(message = "Value can't be null")
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
 
@@ -36,7 +41,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "authorities_id"))
     private List<Role> roles;
 
-    @OneToMany(mappedBy = "users",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<UserVehicle> userVehicles = new ArrayList<>();
 
     @Override

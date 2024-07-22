@@ -1,6 +1,10 @@
 package com.kamilz12.vehiclemanagementsystem.model.vehicle;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,32 +14,42 @@ import java.util.Objects;
 @Getter
 @Entity (name = "UserVehicle")
 @Table(name = "users_has_vehicle")
+@Builder
 public class UserVehicle {
 
-    @EmbeddedId
-    private UserVehicleId id;
+    @Column(name = "id")
+    @Id
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("usersId") // This maps the userId in UserVehicleId
     @JoinColumn(name = "users_id")
-    private User users;
+
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("vehicleId") // This maps the vehicleId in UserVehicleId
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
-    @Column(name ="vin")
-    String vin;
-    @Column(name = "mileage")
-    Integer mileage;
+
+    @Column(name ="vin", nullable = false)
+    @NotNull(message = "Value can't be null")
+    @NotBlank(message = "Value is not present, enter value")
+    private String vin;
+
+    @Column(name = "mileage", nullable = false)
+    @Min(value = 0, message = "Mileage must be greater than or equal to 0")
+    @NotNull(message = "Value can't be null")
+    private int mileage;
+
+    @NotNull(message = "Value can't be null")
+    @Column(name = "owned", nullable = false)
+    private boolean owned;
 
     public UserVehicle() {
     }
-
-    public UserVehicle(User users, Vehicle vehicle) {
-        this.users = users;
+    public UserVehicle(User user, Vehicle vehicle) {
+        this.user = user;
         this.vehicle = vehicle;
-        this.id = new UserVehicleId(users.getId(), vehicle.getId());
     }
 
 
@@ -44,11 +58,11 @@ public class UserVehicle {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserVehicle that = (UserVehicle) o;
-        return Objects.equals(users, that.users) && Objects.equals(vehicle, that.vehicle);
+        return Objects.equals(user, that.user) && Objects.equals(vehicle, that.vehicle);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(users, vehicle);
+        return Objects.hash(user, vehicle);
     }
 }

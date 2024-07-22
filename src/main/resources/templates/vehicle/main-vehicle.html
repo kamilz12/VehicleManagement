@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
->
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Registration and Login System</title>
@@ -33,7 +32,13 @@
 </nav>
 <br /><br />
 <div class="container">
-
+    <h3>Welcome!</h3>
+    <a href="/static">Go Home</a>
+    <a href="/vehicle/createNewVehicle">Create new vehicle</a>
+    <a href="/vehicle/showUserVehicles">Show user vehicles</a>
+    <form action="#" th:action="@{/logout}" method="post">
+        <input type="submit" value="Logout">
+    </form>
 </div>
 </body>
 </html>
