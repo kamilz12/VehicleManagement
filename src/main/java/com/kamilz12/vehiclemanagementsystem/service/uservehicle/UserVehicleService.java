@@ -1,7 +1,7 @@
-package com.kamilz12.vehiclemanagementsystem.service;
+package com.kamilz12.vehiclemanagementsystem.service.uservehicle;
 
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.UserVehicle;
-import com.kamilz12.vehiclemanagementsystem.repository.UserVehicleRepositoryCustom;
+import com.kamilz12.vehiclemanagementsystem.repository.uservehicle.UserVehicleRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

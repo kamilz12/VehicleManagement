@@ -1,10 +1,10 @@
-package com.kamilz12.vehiclemanagementsystem.service;
+package com.kamilz12.vehiclemanagementsystem.service.user;
 
 import com.kamilz12.vehiclemanagementsystem.dto.UserDTO;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Role;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.User;
-import com.kamilz12.vehiclemanagementsystem.repository.RoleRepository;
-import com.kamilz12.vehiclemanagementsystem.repository.UserRepository;
+import com.kamilz12.vehiclemanagementsystem.repository.role.RoleRepository;
+import com.kamilz12.vehiclemanagementsystem.repository.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

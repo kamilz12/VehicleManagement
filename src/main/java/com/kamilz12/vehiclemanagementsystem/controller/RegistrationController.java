@@ -4,7 +4,7 @@ import java.util.logging.Logger;
 
 import com.kamilz12.vehiclemanagementsystem.dto.UserDTO;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.User;
-import com.kamilz12.vehiclemanagementsystem.service.UserService;
+import com.kamilz12.vehiclemanagementsystem.service.user.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -45,14 +45,14 @@ public class RegistrationController {
 	@GetMapping("/showRegistrationForm")
 	public String showMyLoginPage(Model theModel) {
 		
-		theModel.addAttribute("webUser", new UserDTO());
+		theModel.addAttribute("user", new UserDTO());
 		
 		return "registerAndLogin/registration-form";
 	}
 
 	@PostMapping("/processRegistrationForm")
 	public String processRegistrationForm(
-			@Valid @ModelAttribute("webUser") UserDTO userDTO,
+			@Valid @ModelAttribute("user") UserDTO userDTO,
 			BindingResult theBindingResult,
 			HttpSession session, Model theModel) {
 

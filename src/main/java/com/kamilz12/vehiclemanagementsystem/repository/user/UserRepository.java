@@ -1,4 +1,4 @@
-package com.kamilz12.vehiclemanagementsystem.repository;
+package com.kamilz12.vehiclemanagementsystem.repository.user;
 
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.User;
 

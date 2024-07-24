@@ -1,4 +1,4 @@
-package com.kamilz12.vehiclemanagementsystem.repository;
+package com.kamilz12.vehiclemanagementsystem.repository.vehicle;
 
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;

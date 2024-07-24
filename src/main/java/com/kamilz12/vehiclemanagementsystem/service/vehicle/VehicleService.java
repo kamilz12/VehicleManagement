@@ -1,7 +1,7 @@
-package com.kamilz12.vehiclemanagementsystem.service;
+package com.kamilz12.vehiclemanagementsystem.service.vehicle;
 
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Vehicle;
-import com.kamilz12.vehiclemanagementsystem.repository.VehicleRepository;
+import com.kamilz12.vehiclemanagementsystem.repository.vehicle.VehicleRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

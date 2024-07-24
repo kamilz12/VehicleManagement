@@ -2,7 +2,7 @@ package com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.service;
 
 import com.kamilz12.vehiclemanagementsystem.dto.VehicleDTO;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Vehicle;
-import com.kamilz12.vehiclemanagementsystem.repository.VehicleRepository;
+import com.kamilz12.vehiclemanagementsystem.repository.vehicle.VehicleRepository;
 import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.repository.VehicleClientRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.kamilz12.vehiclemanagementsystem.repository;
+package com.kamilz12.vehiclemanagementsystem.repository.role;
 
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Role;
 import jakarta.persistence.EntityManager;

@@ -1,4 +1,4 @@
-package com.kamilz12.vehiclemanagementsystem.service;
+package com.kamilz12.vehiclemanagementsystem.service.user;
 
 import com.kamilz12.vehiclemanagementsystem.dto.UserDTO;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.User;

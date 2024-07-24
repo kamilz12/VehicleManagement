@@ -1,12 +1,46 @@
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Registration and Login System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+</head>
 <body>
-<h1>Something went wrong! </h1>
-<h2>Our Engineers are on it</h2>
-<h3 th:text="${message}"></h3>
-<a href="/static">Go Home</a>
-<form action="#" th:action="@{/logout}" method="post">
-    <input type="submit" value="Logout">
-</form>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{index}">Vehicle Management</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+
+                    <form name="logoutForm" th:action="@{/logout}" method="post">
+                        <input hidden type="submit" value="Sign Out"/>
+                        <button class="btn btn-primary">Sign Out</button>
+                    </form>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<br /><br />
+<div class="container">
+    <h1>SOMETHING WENT WRONG</h1><br>
+
+    <a href="/index" class="btn btn-primary">Go Home</a>
+    <a href="/vehicle/createNewVehicle" class="btn btn-secondary ">Create New Vehicle</a>
+    <a href="/vehicle/showUserVehicles" class="btn btn-secondary">Show list of your vehicles</a>
+    <form action="#" th:action="@{/logout}" method="post" style="display: inline;">
+        <input type="submit" value="Logout" class="btn btn-danger">
+    </form>
+    <a class="btn btn-primary" href="vehicle/main-vehicle.html">Main Vehicle Menu</a>
+
+</div>
 </body>
 </html>

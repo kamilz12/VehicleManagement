@@ -3,9 +3,9 @@ package com.kamilz12.vehiclemanagementsystem.controller;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.User;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.UserVehicle;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Vehicle;
-import com.kamilz12.vehiclemanagementsystem.service.UserService;
-import com.kamilz12.vehiclemanagementsystem.service.UserVehicleService;
-import com.kamilz12.vehiclemanagementsystem.service.VehicleService;
+import com.kamilz12.vehiclemanagementsystem.service.user.UserService;
+import com.kamilz12.vehiclemanagementsystem.service.uservehicle.UserVehicleService;
+import com.kamilz12.vehiclemanagementsystem.service.vehicle.VehicleService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -185,7 +185,7 @@ public class VehicleController {
             userVehicleService.deleteById(id);
         }
         else{
-            return "vehicle/error";
+            return "errors/error";
         }
         return "vehicle/vehicle-deleted";
 

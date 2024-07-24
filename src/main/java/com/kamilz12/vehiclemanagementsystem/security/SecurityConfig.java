@@ -1,6 +1,6 @@
 package com.kamilz12.vehiclemanagementsystem.security;
 
-import com.kamilz12.vehiclemanagementsystem.service.UserService;
+import com.kamilz12.vehiclemanagementsystem.service.user.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;

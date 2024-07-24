@@ -1,7 +1,7 @@
 package com.kamilz12.vehiclemanagementsystem.security;
 
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.User;
-import com.kamilz12.vehiclemanagementsystem.service.UserService;
+import com.kamilz12.vehiclemanagementsystem.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

@@ -1,4 +1,4 @@
-package com.kamilz12.vehiclemanagementsystem.repository;
+package com.kamilz12.vehiclemanagementsystem.repository.uservehicle;
 
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.UserVehicle;
 import jakarta.persistence.EntityManager;
