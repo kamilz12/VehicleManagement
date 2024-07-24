@@ -2,6 +2,7 @@ package com.kamilz12.vehiclemanagementsystem.repository;
 
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.UserVehicle;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
@@ -9,10 +10,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class UserVehicleRepositoryImpl implements UserVehicleRepository{
+public class UserVehicleRepositoryCustomImpl implements UserVehicleRepositoryCustom {
     private final EntityManager entityManager;
-
-    public UserVehicleRepositoryImpl(EntityManager entityManager) {
+    public UserVehicleRepositoryCustomImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
@@ -25,11 +25,16 @@ public class UserVehicleRepositoryImpl implements UserVehicleRepository{
         query.setParameter("vin", vin);
         return query.getResultList();
     }
+
     @Transactional
     @Override
     public void save(UserVehicle userVehicle) {
         try {
-            entityManager.persist(userVehicle);
+            if (userVehicle.getId() == null || findById(userVehicle.getId()) == null) {
+                entityManager.persist(userVehicle);
+            } else {
+                entityManager.merge(userVehicle);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -53,6 +58,22 @@ public class UserVehicleRepositoryImpl implements UserVehicleRepository{
         TypedQuery<UserVehicle> query = entityManager.createQuery("from UserVehicle uv where uv.user.id =: userId", UserVehicle.class);
         query.setParameter("userId",userId);
         return query.getResultList();
+    }
+
+    @Override
+    public UserVehicle findById(Long id) {
+        try {
+            TypedQuery<UserVehicle> query = entityManager.createQuery("from UserVehicle uv where uv.id = :id", UserVehicle.class);
+            query.setParameter("id", id);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+    @Transactional
+    @Override
+    public void deleteById(Long id) {
+        entityManager.remove(findById(id));
     }
 
 }

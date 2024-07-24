@@ -33,35 +33,15 @@
 </nav>
 <br /><br />
 <div class="container">
-    <table class="table table-bordered table-striped">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Make</th>
-            <th scope="col">Model</th>
-            <th scope="col">Year</th>
-            <th scope="col">Engine</th>
-            <th scope="col">Mileage</th>
-            <th scope="col">Update/Delete/Details</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="userVehicle, stat : ${userVehicleList}">
-            <th scope="row" th:text="${stat.count}"></th>
-            <td th:text="${userVehicle.getVehicle().getMake()}"></td>
-            <td th:text="${userVehicle.getVehicle().getModel()}"></td>
-            <td th:text="${userVehicle.getVehicle().getYear()}"></td>
-            <td th:text="${userVehicle.getVehicle().getEngineName()}"></td>
-            <td th:text="${userVehicle.getMileage()}"></td>
-            <td><a class="btn btn-primary" th:href="@{showFormForUpdate(id=${userVehicle.getId()})}">Edit</a>
-            <a class="btn btn-danger" th:href="@{deleteUserVehicle(id=${userVehicle.getId()})}">Delete</a>
-            <a class="btn btn-secondary" th:href="@{showVehicleDetails(id=${userVehicle.getId()})}">Show details</a></td>
-        </tr>
+    <h1>SOMETHING WENT WRONG</h1><br>
 
-        </tbody>
-
-    </table>
-    <a class="btn btn-primary" href="vehicle/main-vehicle.html">Main vehicle menu</a>
+    <a href="/index" class="btn btn-primary">Go Home</a>
+    <a href="/vehicle/createNewVehicle" class="btn btn-secondary ">Create New Vehicle</a>
+    <a href="/vehicle/showUserVehicles" class="btn btn-secondary">Show list of your vehicles</a>
+    <form action="#" th:action="@{/logout}" method="post" style="display: inline;">
+        <input type="submit" value="Logout" class="btn btn-danger">
+    </form>
+    <a class="btn btn-primary" href="vehicle/main-vehicle.html">Main Vehicle Menu</a>
 
 </div>
 </body>

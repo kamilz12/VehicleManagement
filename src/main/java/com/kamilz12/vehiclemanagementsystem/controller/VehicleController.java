@@ -23,27 +23,27 @@ import java.util.stream.Collectors;
 public class VehicleController {
 
     private final VehicleService vehicleService;
-    List <Vehicle> vehicles;
-
+    List<Vehicle> vehicles;
 
 
     private final UserVehicleService userVehicleService;
     private final UserService userService;
+
     public VehicleController(VehicleService vehicleService, UserVehicleService userVehicleService, UserService userService) {
         this.userVehicleService = userVehicleService;
         this.userService = userService;
         this.vehicleService = vehicleService;
+        this.vehicles = vehicleService.findAll();
     }
 
     @GetMapping("**")
-    public String mainPageVehicle(){
+    public String mainPageVehicle() {
         return "vehicle/main-vehicle";
-
     }
 
+
     @GetMapping("/createNewVehicle")
-    public String createNewVehicle(Model model){
-        vehicles = vehicleService.findAll();
+    public String createNewVehicle(Model model) {
         UserVehicle userVehicle = new UserVehicle();
         model.addAttribute("userVehicle", userVehicle);
         return "vehicle/new-vehicle";
@@ -61,12 +61,13 @@ public class VehicleController {
     @GetMapping("/models")
     @ResponseBody
     public ResponseEntity<Set<String>> getModelsByMake(@RequestParam("make") String make) {
-        Set <String> modelsSet = vehicles.stream()
+        Set<String> modelsSet = vehicles.stream()
                 .filter(vehicle -> vehicle.getMake().equals(make))
                 .map(Vehicle::getModel)
                 .collect(Collectors.toCollection(TreeSet::new));
         return ResponseEntity.ok(modelsSet);
     }
+
     @GetMapping("/years")
     @ResponseBody
     public ResponseEntity<Set<Integer>> getAvailableYears(@RequestParam String make,
@@ -88,13 +89,13 @@ public class VehicleController {
     public ResponseEntity<Set<String>> getEnginesByModelAndMake(@RequestParam String make,
                                                                 @RequestParam String model,
                                                                 @RequestParam Integer year) {
-        Set <String> engines = vehicles.stream()
+        Set<String> engines = vehicles.stream()
                 .filter(vehicle -> vehicle.getMake().equals(make))
                 .filter(vehicle -> vehicle.getModel().equals(model))
-                .filter(vehicle ->  vehicle.getYear().equals(year))
+                .filter(vehicle -> vehicle.getYear().equals(year))
                 .map(Vehicle::getEngineName)
                 .collect(Collectors.toCollection(TreeSet::new));
-        if(engines.isEmpty()){
+        if (engines.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(engines);
@@ -105,36 +106,33 @@ public class VehicleController {
     public ResponseEntity<Integer> getInternRestID(@RequestParam String make,
                                                    @RequestParam String model,
                                                    @RequestParam Integer year,
-                                                   @RequestParam String engine){
-    Integer internRestId = vehicles.stream()
-            .filter(vehicle -> vehicle.getMake().equals(make))
-            .filter(vehicle -> vehicle.getModel().equals(model))
-            .filter(vehicle -> vehicle.getYear().equals(year))
-            .filter(vehicle -> vehicle.getEngineName().equals(engine))
-            .map(Vehicle::getInternRestId)
-            .findFirst().orElse(null);
-    if(internRestId==null){
-        return ResponseEntity.notFound().build();
+                                                   @RequestParam String engine) {
+        Integer internRestId = vehicles.stream()
+                .filter(vehicle -> vehicle.getMake().equals(make))
+                .filter(vehicle -> vehicle.getModel().equals(model))
+                .filter(vehicle -> vehicle.getYear().equals(year))
+                .filter(vehicle -> vehicle.getEngineName().equals(engine))
+                .map(Vehicle::getInternRestId)
+                .findFirst().orElse(null);
+        if (internRestId == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(internRestId);
     }
-    return ResponseEntity.ok(internRestId);
-    }
-
 
 
     @PostMapping("/processVehicleForm")
-    public String processVehicleForm(@Valid @ModelAttribute("userVehicle") UserVehicle userVehicle, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
+    public String processVehicleForm(@Valid @ModelAttribute("userVehicle") UserVehicle userVehicle, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             return "vehicle/new-vehicle";
         }
-            Vehicle vehicle = vehicleService.findByInternRestId(userVehicle.getVehicle().getInternRestId());
-            log.info(String.valueOf(vehicle.getId()));
-            User user = userService.findUserById(userService.findLoggedUserIdByUsername());
-            userVehicle.setUser(user);
-            userVehicle.setVehicle(vehicle);
-            userVehicle.setOwned(true);
-            userVehicleService.save(userVehicle);
-            return "vehicle/vehicle-confirmation";
-
+        Vehicle vehicle = vehicleService.findByInternRestId(userVehicle.getVehicle().getInternRestId());
+        User user = userService.findUserById(userService.findLoggedUserIdByUsername());
+        userVehicle.setUser(user);
+        userVehicle.setVehicle(vehicle);
+        userVehicle.setOwned(true);
+        userVehicleService.save(userVehicle);
+        return "vehicle/vehicle-confirmation";
     }
 
     @GetMapping("/showUserVehicles")
@@ -146,4 +144,55 @@ public class VehicleController {
     }
 
 
+    @GetMapping("/showFormForUpdate")
+    String updateForm(@RequestParam("id") long id, Model model){
+        UserVehicle userVehicle = userVehicleService.findById(id);
+        model.addAttribute("userVehicle", userVehicle);
+
+        // Extract vehicle details
+        Vehicle vehicle = userVehicle.getVehicle();
+
+        // Initialize the attributes for dropdowns
+        Set<String> makes = vehicles.stream().map(Vehicle::getMake).collect(Collectors.toSet());
+        model.addAttribute("makes", makes);
+
+        Set<String> models = vehicles.stream()
+                .filter(v -> v.getMake().equals(vehicle.getMake()))
+                .map(Vehicle::getModel).collect(Collectors.toSet());
+        model.addAttribute("models", models);
+
+        Set<Integer> years = vehicles.stream()
+                .filter(v -> v.getMake().equals(vehicle.getMake()))
+                .filter(v -> v.getModel().equals(vehicle.getModel()))
+                .map(Vehicle::getYear).collect(Collectors.toSet());
+        model.addAttribute("years", years);
+
+        Set<String> engines = vehicles.stream()
+                .filter(v -> v.getMake().equals(vehicle.getMake()))
+                .filter(v -> v.getModel().equals(vehicle.getModel()))
+                .filter(v -> v.getYear().equals(vehicle.getYear()))
+                .map(Vehicle::getEngineName).collect(Collectors.toSet());
+        model.addAttribute("engines", engines);
+
+        return "vehicle/new-vehicle";
+    }
+
+    @GetMapping("/deleteUserVehicle")
+    String deleteUserVehicle(@RequestParam("id") long id, Model model){
+        UserVehicle userVehicle = userVehicleService.findById(id);
+        if(userVehicle!=null) {
+            model.addAttribute("userVehicle", userVehicle);
+            userVehicleService.deleteById(id);
+        }
+        else{
+            return "vehicle/error";
+        }
+        return "vehicle/vehicle-deleted";
+
+    }
+
+    @GetMapping("/showVehicleDetails")
+    String showDetails(@RequestParam("id") long id, Model model) {
+        return null;
+    }
 }

@@ -32,13 +32,16 @@
 </nav>
 <br /><br />
 <div class="container">
-    <form th:action="@{processVehicleForm}" th:object="${userVehicle}" method="post">
+    <form th:action="@{/vehicle/processVehicleForm}" th:object="${userVehicle}" method="post">
+        <input type="hidden" th:field="*{id}">
         <table class="table table-bordered">
             <tr>
                 <td><label for="make">Make:</label></td>
                 <td>
                     <select class="form-control" id="make" th:field="*{vehicle.make}">
-                        <option value="">Select a make</option>
+                        <option th:value="${null}" th:text="|Select a make|"></option>
+                        <option th:each="make : ${makes}" th:value="${make}" th:text="${make}"
+                                th:selected="${make.equals(userVehicle.vehicle.make)}"></option>
                     </select>
                     <span class="error" th:if='${#fields.hasErrors("vehicle.make")}' th:errors="*{vehicle.make}"></span>
                 </td>
@@ -47,7 +50,9 @@
                 <td><label for="model">Model:</label></td>
                 <td>
                     <select class="form-control" id="model" th:field="*{vehicle.model}">
-                        <option value="">Select a model</option>
+                        <option th:value="${null}" th:text="|Select a model|"></option>
+                        <option th:each="model : ${models}" th:value="${model}" th:text="${model}"
+                                th:selected="${model.equals(userVehicle.vehicle.model)}"></option>
                     </select>
                     <span class="error" th:if='${#fields.hasErrors("vehicle.model")}' th:errors="*{vehicle.model}"></span>
                 </td>
@@ -56,7 +61,9 @@
                 <td><label for="year">Year:</label></td>
                 <td>
                     <select class="form-control" id="year" th:field="*{vehicle.year}">
-                        <option value="">Select a year</option>
+                        <option th:value="${null}" th:text="|Select a year|"></option>
+                        <option th:each="year : ${years}" th:value="${year}" th:text="${year}"
+                                th:selected="${year.equals(userVehicle.vehicle.year)}"></option>
                     </select>
                     <span class="error" th:if='${#fields.hasErrors("vehicle.year")}' th:errors="*{vehicle.year}"></span>
                 </td>
@@ -65,7 +72,9 @@
                 <td><label for="engine">Engine:</label></td>
                 <td>
                     <select class="form-control" id="engine" th:field="*{vehicle.engineName}">
-                        <option value="">Select an engine</option>
+                        <option th:value="${null}" th:text="|Select an engine|"></option>
+                        <option th:each="engine : ${engines}" th:value="${engine}" th:text="${engine}"
+                                th:selected="${engine.equals(userVehicle.vehicle.engineName)}"></option>
                     </select>
                     <span class="error" th:if='${#fields.hasErrors("vehicle.engineName")}' th:errors="*{vehicle.engineName}"></span>
                 </td>
@@ -85,14 +94,14 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
+                <td colspan="3">
                     <input type="hidden" id="internRestId" th:value="internRestId" th:field="*{vehicle.internRestId}">
                     <input type="submit" value="Submit" class="btn btn-primary">
                 </td>
             </tr>
         </table>
     </form>
-    <a class="btn btn-primary" href="vehicle/main-vehicle.html">Main vehicle menu</a>
+    <a class="btn btn-primary" th:href="@{/vehicle/main-vehicle}">Main vehicle menu</a>
 
     <script>
         $(document).ready(function() {
@@ -101,9 +110,8 @@
                 type: 'GET',
                 success: function(response) {
                     let makeSelect = $('#make');
-                    makeSelect.empty().append('<option value="">Select a make</option>');
                     $.each(response, function(index, make) {
-                        makeSelect.append('<option value="' + make + '">' + make + '</option>');
+                        makeSelect.append('<option th:value="' + make + '" th:selected="${make.equals(userVehicle.vehicle.make)}">' + make + '</option>');
                     });
                 }
             });
@@ -116,9 +124,8 @@
                     data: { make: selectedMake },
                     success: function(response) {
                         let modelSelect = $('#model');
-                        modelSelect.empty().append('<option value="">Select a model</option>');
                         $.each(response, function(index, model) {
-                            modelSelect.append('<option value="' + model + '">' + model + '</option>');
+                            modelSelect.append('<option th:value="' + model + '" th:selected="${model.equals(userVehicle.vehicle.model)}">' + model + '</option>');
                         });
                     }
                 });
@@ -133,9 +140,8 @@
                     data: { make: selectedMake, model: selectedModel },
                     success: function(response) {
                         let yearSelect = $('#year');
-                        yearSelect.empty().append('<option value="">Select a year</option>');
                         $.each(response, function(index, year) {
-                            yearSelect.append('<option value="' + year + '">' + year + '</option>');
+                            yearSelect.append('<option th:value="' + year + '"th:selected="${year.equals(userVehicle.vehicle.year)}">' + year + '</option>');
                         });
                     }
                 });
@@ -151,9 +157,8 @@
                     data: { make: selectedMake, model: selectedModel, year: selectedYear },
                     success: function(response) {
                         let engineSelect = $('#engine');
-                        engineSelect.empty().append('<option value="">Select an engine</option>');
                         $.each(response, function(index, engine) {
-                            engineSelect.append('<option value="' + engine + '">' + engine + '</option>');
+                            engineSelect.append('<option th:value="' + engine + '"th:selected="${engine.equals(userVehicle.vehicle.engine)}">' + engine + '</option>');
                         });
                     }
                 });

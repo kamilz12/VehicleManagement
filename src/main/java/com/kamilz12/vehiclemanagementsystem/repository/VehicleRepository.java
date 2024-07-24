@@ -23,11 +23,4 @@ public interface VehicleRepository extends JpaRepository<Vehicle,Integer> {
 
     @Query("select distinct v.internRestId from Vehicle v where v.make=?1 and v.model=?2 and v.year=?3 and v.engineName=?4")
     Integer findDistinctInternRestIdByMakeModelYearEngineName(String make, String model,Integer year, String engine );
-
-
-
-
-
-
-
 }
