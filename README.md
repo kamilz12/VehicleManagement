@@ -1,30 +1,48 @@
 # Vehicle Data Application
 
-This application allows you to download data from government sources via the [Fuel Economy API](https://www.fueleconomy.gov/feg/ws/index.shtml). Using this RestAPI, you can retrieve information such as the make, model, year of manufacture, and engine specifications of all available cars. It is possible to update car database (it will be remanufactured to scheluded update a vehicle data from rest api)
-It's possible to create an account with hashed password. After loging to application we can create, update, delete and read a list of cars.
+# Vehicle Data Application
+
+This application allows you to fetch data from government sources via the [Fuel Economy API](https://www.fueleconomy.gov/feg/ws/index.shtml). Using this API, you can retrieve information such as the make, model, year of manufacture, and engine specifications of all available cars.
 
 ## Features
 
-- Retrieve vehicle data including make, model, year, and engine specifications from the API.
-- Select, update delete and add vehicles to your user profile.
+- Retrieve vehicle data including make, model, year, and engine specifications from the Fuel Economy API.
+- Select and add vehicles to your user profile.
 - Store vehicle data in a database.
 - User-friendly interface to manage your vehicle data.
 
 ## TODO
-- maintenance CRUD
-- calculating fuel consumption based on user data and compare to data from fuel economy api
-- interface for receiveing this data
-- scheluded vehicle database update and upgrading database based on role of user
+
+- [ ] Add a maintenance table for handling vehicle servicing.
+- [ ] Implement CRUD operations for adding user vehicles.
+- [ ] Import data from the REST API into the database.
+- [ ] Create a user interface.
+
 ## Usage
 
 1. Access the application in your web browser at `http://localhost:8000`.
-2. Use the interface to retrieve vehicle data from the Fuel Economy API, key isn't required
+2. Use the interface to retrieve vehicle data from the Fuel Economy API.
 3. Select and add vehicles to your profile.
 4. Manage your vehicles and maintenance records through the user interface.
 
 ## Contributing
 
 We welcome contributions to improve the application. If you have suggestions or find issues, please open an issue or submit a pull request.
+
+Screenshots:
+![image](https://github.com/user-attachments/assets/63ad2cf3-a6bb-46ad-8845-e61ea5699487)
+![image](https://github.com/user-attachments/assets/b12e538e-d45a-4778-a07a-d2c7e3c48256)
+![image](https://github.com/user-attachments/assets/8f9ec453-aae2-49d3-8023-97f38fc9f30f)
+![image](https://github.com/user-attachments/assets/5ffbb0ef-cc07-4a43-b6a5-e1a4d2685d94)
+![image](https://github.com/user-attachments/assets/06d080cb-ba70-4c1c-9507-5acdc800987f)
+![image](https://github.com/user-attachments/assets/62321622-4bfd-4e49-9044-d86d27cceff8)
+![image](https://github.com/user-attachments/assets/a0a61741-eaec-4d69-83b6-00539f8facfa)
+![image](https://github.com/user-attachments/assets/128699d8-f3a3-4e77-82f0-1aaaf225d998)
+![image](https://github.com/user-attachments/assets/d99ac31c-7896-492a-937d-953301a0c699)
+![image](https://github.com/user-attachments/assets/2fcce398-e621-4bc7-a68d-049eb8d07a27)
+![image](https://github.com/user-attachments/assets/537acbc5-3078-42ec-a10e-4afebcaefa74)
+
+
 
 ## License
 
