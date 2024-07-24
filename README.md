@@ -28,7 +28,9 @@ This application allows you to fetch data from government sources via the [Fuel 
 ## Contributing
 
 We welcome contributions to improve the application. If you have suggestions or find issues, please open an issue or submit a pull request.
-
+## Screenshots
+<details>
+<summary>Screenshots</summary>
 Screenshots:
 ![image](https://github.com/user-attachments/assets/63ad2cf3-a6bb-46ad-8845-e61ea5699487)
 ![image](https://github.com/user-attachments/assets/b12e538e-d45a-4778-a07a-d2c7e3c48256)
@@ -41,7 +43,7 @@ Screenshots:
 ![image](https://github.com/user-attachments/assets/d99ac31c-7896-492a-937d-953301a0c699)
 ![image](https://github.com/user-attachments/assets/2fcce398-e621-4bc7-a68d-049eb8d07a27)
 ![image](https://github.com/user-attachments/assets/537acbc5-3078-42ec-a10e-4afebcaefa74)
-
+</details>
 
 
 ## License
