@@ -12,4 +12,5 @@ public interface UserVehicleRepository{
 
     List<UserVehicle> findByVin(String vin);
     List<UserVehicle> findAll();
+    List<UserVehicle> findAllByUserId(Long userId);
 }

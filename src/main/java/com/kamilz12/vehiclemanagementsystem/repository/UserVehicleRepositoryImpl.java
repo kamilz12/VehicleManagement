@@ -48,4 +48,11 @@ public class UserVehicleRepositoryImpl implements UserVehicleRepository{
         TypedQuery<UserVehicle> query = entityManager.createQuery("from UserVehicle", UserVehicle.class);
         return query.getResultList();
     }
+    @Override
+    public List<UserVehicle> findAllByUserId(Long userId) {
+        TypedQuery<UserVehicle> query = entityManager.createQuery("from UserVehicle uv where uv.user.id =: userId", UserVehicle.class);
+        query.setParameter("userId",userId);
+        return query.getResultList();
+    }
+
 }

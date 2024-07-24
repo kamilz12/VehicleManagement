@@ -19,6 +19,7 @@ public class VehicleClientService {
         this.vehicleRepository = vehicleRepository;
         this.vehicleClientRepository = vehicleClientRepository;
     }
+    //Uncomment @PostConstruct to load data from restapi
     //@PostConstruct
         public void fetchAndSaveALlVehiclesDataFromAPI(){
             List<VehicleDTO> vehicleDTOList = vehicleClientRepository.fetchAllDataFromDatabase();
@@ -26,7 +27,7 @@ public class VehicleClientService {
 
             for (VehicleDTO vehicleDTO : vehicleDTOList) {
                 if(vehiclesFromDatabase.stream().noneMatch(vehicle -> vehicle.getInternRestId().equals(vehicleDTO.getEngineInternId()))) {
-                    log.info("Vehicle with id: " + vehicleDTO.getEngineInternId() + " does not exist in the database, saved!");
+                    log.info("Vehicle with id: {} does not exist in the database, saved!", vehicleDTO.getEngineInternId());
                     Vehicle vehicle = new Vehicle();
                     vehicle.setMake(vehicleDTO.getMake());
                     vehicle.setModel(vehicleDTO.getModel());
@@ -35,7 +36,7 @@ public class VehicleClientService {
                     vehicle.setInternRestId(vehicleDTO.getEngineInternId());
                     vehicleRepository.save(vehicle);}
             else{
-                    log.info("Vehicle with id: " + vehicleDTO.getEngineInternId() + " already exists in the database");
+                    log.info("Vehicle with id: {} already exists in the database", vehicleDTO.getEngineInternId());
                 }
             }
         }

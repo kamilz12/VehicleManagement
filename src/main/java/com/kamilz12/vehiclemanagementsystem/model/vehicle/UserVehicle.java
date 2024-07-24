@@ -52,6 +52,14 @@ public class UserVehicle {
         this.vehicle = vehicle;
     }
 
+    public UserVehicle(Long id, User user, Vehicle vehicle, String vin, int mileage, boolean owned) {
+        this.id = id;
+        this.user = user;
+        this.vehicle = vehicle;
+        this.vin = vin;
+        this.mileage = mileage;
+        this.owned = owned;
+    }
 
     @Override
     public boolean equals(Object o) {

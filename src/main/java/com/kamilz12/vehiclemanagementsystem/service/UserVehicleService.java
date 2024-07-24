@@ -44,6 +44,9 @@ public class UserVehicleService {
     public List<UserVehicle> findAll(){
         return userVehicleRepository.findAll();
     }
+    public List<UserVehicle> findAllByUserId(Long id){
+        return userVehicleRepository.findAllByUserId(id);
+    }
 }
 
 

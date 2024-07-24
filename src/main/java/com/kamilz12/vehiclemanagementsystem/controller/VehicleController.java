@@ -26,6 +26,7 @@ public class VehicleController {
     List <Vehicle> vehicles;
 
 
+
     private final UserVehicleService userVehicleService;
     private final UserService userService;
     public VehicleController(VehicleService vehicleService, UserVehicleService userVehicleService, UserService userService) {
@@ -37,6 +38,7 @@ public class VehicleController {
     @GetMapping("**")
     public String mainPageVehicle(){
         return "vehicle/main-vehicle";
+
     }
 
     @GetMapping("/createNewVehicle")
@@ -137,7 +139,8 @@ public class VehicleController {
 
     @GetMapping("/showUserVehicles")
     public String showUserVehicles(Model model){
-        List <UserVehicle> userVehicles = userVehicleService.findAll();
+        User user = userService.findUserById(userService.findLoggedUserIdByUsername());
+        List <UserVehicle> userVehicles = userVehicleService.findAllByUserId(user.getId());
         model.addAttribute("userVehicleList",userVehicles);
         return "vehicle/user-vehicles-list";
     }

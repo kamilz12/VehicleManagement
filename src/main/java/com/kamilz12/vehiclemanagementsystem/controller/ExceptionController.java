@@ -22,7 +22,7 @@ public class ExceptionController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex) {
         // Log a brief message instead of the full stack trace
-        LoggerFactory.getLogger(ExceptionController.class).error("Exception occurred: {}", ex.getMessage());
+        LoggerFactory.getLogger(ExceptionController.class). error("Exception occurred: {}", ex.getMessage());
         return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
     }
     @ExceptionHandler(IllegalArgumentException.class)

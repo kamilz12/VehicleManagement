@@ -27,9 +27,9 @@
                 <div class="card-text">
 
                     <!-- Registration Form -->
-                    <form action="#" th:action="@{/register/showRegistrationForm}"
+                    <form action="#" th:action="@{/register/processRegistrationForm}"
                           th:object="${webUser}"
-                          method="POST" class="form-horizontal">
+                          method="post" class="form-horizontal">
 
                         <!-- Place for messages: error, alert etc ... -->
                         <div class="form-group">
