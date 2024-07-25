@@ -1,7 +1,5 @@
 # Vehicle Data Application
 
-# Vehicle Data Application
-
 This application allows you to fetch data from government sources via the [Fuel Economy API](https://www.fueleconomy.gov/feg/ws/index.shtml). Using this API, you can retrieve information such as the make, model, year of manufacture, and engine specifications of all available cars.
 
 ## Features
@@ -28,7 +26,6 @@ This application allows you to fetch data from government sources via the [Fuel 
 ## Contributing
 
 We welcome contributions to improve the application. If you have suggestions or find issues, please open an issue or submit a pull request.
-## Screenshots
 
 <details>
 <summary>Screenshots</summary>
@@ -45,7 +42,6 @@ We welcome contributions to improve the application. If you have suggestions or 
 ![Screenshot 10](https://github.com/user-attachments/assets/537acbc5-3078-42ec-a10e-4afebcaefa74)
 
 </details>
-
 
 ## License
 
