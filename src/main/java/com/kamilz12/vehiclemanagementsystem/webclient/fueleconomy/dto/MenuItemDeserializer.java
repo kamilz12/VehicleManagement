@@ -1,7 +1,6 @@
 package com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.dto;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,7 +12,7 @@ import java.util.List;
 public class MenuItemDeserializer extends JsonDeserializer<List<FuelEconomyMenuItem>> {
     @Override
     public List<FuelEconomyMenuItem> deserialize(JsonParser p, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         JsonNode node = p.getCodec().readTree(p);
         List<FuelEconomyMenuItem> menuItems = new ArrayList<>();
 
@@ -30,7 +29,6 @@ public class MenuItemDeserializer extends JsonDeserializer<List<FuelEconomyMenuI
             menuItem.setValue(node.get("value").asText());
             menuItems.add(menuItem);
         }
-
         return menuItems;
     }
 }

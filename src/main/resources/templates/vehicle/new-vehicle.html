@@ -40,10 +40,9 @@
                 <td>
                     <select class="form-control" id="make" th:field="*{vehicle.make}">
                         <option th:value="${null}" th:text="|Select a make|"></option>
-                        <option th:each="make : ${makes}" th:value="${make}" th:text="${make}"
-                                th:selected="${make.equals(userVehicle.vehicle.make)}"></option>
+                        <option th:each="make : ${makes}" th:value="${make}" th:text="${make}"></option>
                     </select>
-                    <span class="error" th:if='${#fields.hasErrors("vehicle.make")}' th:errors="*{vehicle.make}"></span>
+                    <span class="text-danger" th:if='${#fields.hasErrors("vehicle.make")}' th:errors="*{vehicle.make}"></span>
                 </td>
             </tr>
             <tr>
@@ -51,10 +50,9 @@
                 <td>
                     <select class="form-control" id="model" th:field="*{vehicle.model}">
                         <option th:value="${null}" th:text="|Select a model|"></option>
-                        <option th:each="model : ${models}" th:value="${model}" th:text="${model}"
-                                th:selected="${model.equals(userVehicle.vehicle.model)}"></option>
+                        <option th:each="model : ${models}" th:value="${model}" th:text="${model}"></option>
                     </select>
-                    <span class="error" th:if='${#fields.hasErrors("vehicle.model")}' th:errors="*{vehicle.model}"></span>
+                    <span class="text-danger" th:if='${#fields.hasErrors("vehicle.model")}' th:errors="*{vehicle.model}"></span>
                 </td>
             </tr>
             <tr>
@@ -62,10 +60,9 @@
                 <td>
                     <select class="form-control" id="year" th:field="*{vehicle.year}">
                         <option th:value="${null}" th:text="|Select a year|"></option>
-                        <option th:each="year : ${years}" th:value="${year}" th:text="${year}"
-                                th:selected="${year.equals(userVehicle.vehicle.year)}"></option>
+                        <option th:each="year : ${years}" th:value="${year}" th:text="${year}"></option>
                     </select>
-                    <span class="error" th:if='${#fields.hasErrors("vehicle.year")}' th:errors="*{vehicle.year}"></span>
+                    <span class="text-danger" th:if='${#fields.hasErrors("vehicle.year")}' th:errors="*{vehicle.year}"></span>
                 </td>
             </tr>
             <tr>
@@ -73,24 +70,23 @@
                 <td>
                     <select class="form-control" id="engine" th:field="*{vehicle.engineName}">
                         <option th:value="${null}" th:text="|Select an engine|"></option>
-                        <option th:each="engine : ${engines}" th:value="${engine}" th:text="${engine}"
-                                th:selected="${engine.equals(userVehicle.vehicle.engineName)}"></option>
+                        <option th:each="engine : ${engines}" th:value="${engine}" th:text="${engine}"></option>
                     </select>
-                    <span class="error" th:if='${#fields.hasErrors("vehicle.engineName")}' th:errors="*{vehicle.engineName}"></span>
+                    <span class="text-danger" th:if='${#fields.hasErrors("vehicle.engineName")}' th:errors="*{vehicle.engineName}"></span>
                 </td>
             </tr>
             <tr>
                 <td><label for="vin">VIN:</label></td>
                 <td>
                     <input type="text" id="vin" th:field="*{vin}" class="form-control"/>
-                    <span class="error" th:if='${#fields.hasErrors("vin")}' th:errors="*{vin}"></span>
+                    <span class="text-danger" th:if='${#fields.hasErrors("vin")}' th:errors="*{vin}"></span>
                 </td>
             </tr>
             <tr>
                 <td><label for="mileage">Mileage:</label></td>
                 <td>
                     <input type="number" id="mileage" th:field="*{mileage}" class="form-control" required/>
-                    <span class="error" th:if='${#fields.hasErrors("mileage")}' th:errors="*{mileage}"></span>
+                    <span class="text-danger" th:if='${#fields.hasErrors("mileage")}' th:errors="*{mileage}"></span>
                 </td>
             </tr>
             <tr>
@@ -111,57 +107,72 @@
                 success: function(response) {
                     let makeSelect = $('#make');
                     $.each(response, function(index, make) {
-                        makeSelect.append('<option th:value="' + make + '" th:selected="${make.equals(userVehicle.vehicle.make)}">' + make + '</option>');
+                        makeSelect.append('<option value="' + make + '">' + make + '</option>');
                     });
                 }
             });
 
             $('#make').change(function() {
                 let selectedMake = $(this).val();
-                $.ajax({
-                    url: '/vehicle/models',
-                    type: 'GET',
-                    data: { make: selectedMake },
-                    success: function(response) {
-                        let modelSelect = $('#model');
-                        $.each(response, function(index, model) {
-                            modelSelect.append('<option th:value="' + model + '" th:selected="${model.equals(userVehicle.vehicle.model)}">' + model + '</option>');
-                        });
-                    }
-                });
+                let modelSelect = $('#model');
+                modelSelect.empty().append('<option th:value="${null}" th:text="|Select a model|"></option>');
+                $('#year').empty().append('<option th:value="${null}" th:text="|Select a year|"></option>');
+                $('#engine').empty().append('<option th:value="${null}" th:text="|Select an engine|"></option>');
+                $('#internRestId').val('');
+                if (selectedMake) {
+                    $.ajax({
+                        url: '/vehicle/models',
+                        type: 'GET',
+                        data: { make: selectedMake },
+                        success: function(response) {
+                            $.each(response, function(index, model) {
+                                modelSelect.append('<option value="' + model + '">' + model + '</option>');
+                            });
+                        }
+                    });
+                }
             });
 
             $('#model').change(function() {
                 let selectedMake = $('#make').val();
                 let selectedModel = $(this).val();
-                $.ajax({
-                    url: '/vehicle/years',
-                    type: 'GET',
-                    data: { make: selectedMake, model: selectedModel },
-                    success: function(response) {
-                        let yearSelect = $('#year');
-                        $.each(response, function(index, year) {
-                            yearSelect.append('<option th:value="' + year + '"th:selected="${year.equals(userVehicle.vehicle.year)}">' + year + '</option>');
-                        });
-                    }
-                });
+                let yearSelect = $('#year');
+                yearSelect.empty().append('<option th:value="${null}" th:text="|Select a year|"></option>');
+                $('#engine').empty().append('<option th:value="${null}" th:text="|Select an engine|"></option>');
+                $('#internRestId').val('');
+                if (selectedModel) {
+                    $.ajax({
+                        url: '/vehicle/years',
+                        type: 'GET',
+                        data: { make: selectedMake, model: selectedModel },
+                        success: function(response) {
+                            $.each(response, function(index, year) {
+                                yearSelect.append('<option value="' + year + '">' + year + '</option>');
+                            });
+                        }
+                    });
+                }
             });
 
             $('#year').change(function() {
                 let selectedMake = $('#make').val();
                 let selectedModel = $('#model').val();
                 let selectedYear = $(this).val();
-                $.ajax({
-                    url: '/vehicle/engines',
-                    type: 'GET',
-                    data: { make: selectedMake, model: selectedModel, year: selectedYear },
-                    success: function(response) {
-                        let engineSelect = $('#engine');
-                        $.each(response, function(index, engine) {
-                            engineSelect.append('<option th:value="' + engine + '"th:selected="${engine.equals(userVehicle.vehicle.engine)}">' + engine + '</option>');
-                        });
-                    }
-                });
+                let engineSelect = $('#engine');
+                engineSelect.empty().append('<option th:value="${null}" th:text="|Select an engine|"></option>');
+                $('#internRestId').val('');
+                if (selectedYear) {
+                    $.ajax({
+                        url: '/vehicle/engines',
+                        type: 'GET',
+                        data: { make: selectedMake, model: selectedModel, year: selectedYear },
+                        success: function(response) {
+                            $.each(response, function(index, engine) {
+                                engineSelect.append('<option value="' + engine + '">' + engine + '</option>');
+                            });
+                        }
+                    });
+                }
             });
 
             $('#engine').change(function() {
@@ -169,17 +180,20 @@
                 let selectedModel = $('#model').val();
                 let selectedYear = $('#year').val();
                 let selectedEngine = $(this).val();
-                $.ajax({
-                    url: '/vehicle/internRestId',
-                    type: 'GET',
-                    data: { make: selectedMake, model: selectedModel, year: selectedYear, engine: selectedEngine },
-                    success: function(response) {
-                        $('#internRestId').val(response);
-                    }
-                });
+                if (selectedEngine) {
+                    $.ajax({
+                        url: '/vehicle/internRestId',
+                        type: 'GET',
+                        data: { make: selectedMake, model: selectedModel, year: selectedYear, engine: selectedEngine },
+                        success: function(response) {
+                            $('#internRestId').val(response);
+                        }
+                    });
+                }
             });
         });
     </script>
+
 </div>
 </body>
 </html>

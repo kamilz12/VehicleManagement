@@ -1,12 +1,14 @@
 package com.kamilz12.vehiclemanagementsystem.model.vehicle;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.*;
-
+@Data
 @Setter
 @Getter
 @Entity (name = "Vehicle")
@@ -18,10 +20,12 @@ public class Vehicle {
     private Long id;
 
     @NotNull(message = "Value can't be null")
+    @NotBlank(message = "Make is required")
     @Column(name = "make", nullable = false)
     private String make;
 
-    @NotNull(message = "Value can't be null")
+    @NotNull(message = "Model is required")
+    @NotBlank(message = "Model is required")
     @Column(name = "model", nullable = false)
     private String model;
 
@@ -33,7 +37,8 @@ public class Vehicle {
     @Column(name = "intern_rest_id", nullable = false)
     private Integer internRestId;
 
-    @NotNull(message = "Value can't be null")
+    @NotNull(message = "Engine name is required")
+    @NotBlank(message = "Engine name is required")
     @Column(name = "enginename", nullable = false)
     private String engineName;
 

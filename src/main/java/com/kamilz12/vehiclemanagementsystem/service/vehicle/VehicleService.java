@@ -41,6 +41,7 @@ public class VehicleService {
         return vehicleRepository.findByInternRestId(internRestId);
     }
 
+
     public void save(Vehicle vehicle){
         this.vehicleRepository.save(vehicle);
     }

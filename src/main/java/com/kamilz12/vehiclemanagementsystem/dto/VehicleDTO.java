@@ -15,4 +15,8 @@ public class VehicleDTO {
     private Integer engineInternId;
     private String engine_name;
 
+    private String youSaveSpend;
+    private String city08;
+    private String highway08;
+    private String fuelType1;
 }

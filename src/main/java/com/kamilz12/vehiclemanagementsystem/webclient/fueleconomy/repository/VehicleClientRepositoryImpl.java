@@ -40,4 +40,9 @@ public class VehicleClientRepositoryImpl implements VehicleClientRepository {
     public List<VehicleDTO> fetchAllDataFromDatabase() {
         return vehicleClient.fetchVehicles();
     }
+
+    @Override
+    public VehicleDTO getInfoAboutFuelConsumption(Integer id) {
+        return vehicleClient.fetchYourVehicleConsumptionData(id);
+    }
 }

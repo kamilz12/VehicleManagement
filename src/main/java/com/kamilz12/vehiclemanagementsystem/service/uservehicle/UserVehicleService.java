@@ -43,6 +43,7 @@ public class UserVehicleService {
     public void deleteById(Long id){
         userVehicleRepositoryCustom.deleteById(id);
     }
+
 }
 
 

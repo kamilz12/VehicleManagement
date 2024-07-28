@@ -4,6 +4,7 @@ import com.kamilz12.vehiclemanagementsystem.dto.VehicleDTO;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Vehicle;
 import com.kamilz12.vehiclemanagementsystem.repository.vehicle.VehicleRepository;
 import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.repository.VehicleClientRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,8 @@ public class VehicleClientService {
         this.vehicleRepository = vehicleRepository;
         this.vehicleClientRepository = vehicleClientRepository;
     }
-    //Uncomment @PostConstruct to load data from restapi
+
+    //enable to fetch data from api
     //@PostConstruct
         public void fetchAndSaveALlVehiclesDataFromAPI(){
             List<VehicleDTO> vehicleDTOList = vehicleClientRepository.fetchAllDataFromDatabase();
@@ -39,5 +41,9 @@ public class VehicleClientService {
                     log.info("Vehicle with id: {} already exists in the database", vehicleDTO.getEngineInternId());
                 }
             }
+        }
+
+        public VehicleDTO fetchFuelConsumptionData (Integer id){
+            return vehicleClientRepository.getInfoAboutFuelConsumption(id);
         }
 }

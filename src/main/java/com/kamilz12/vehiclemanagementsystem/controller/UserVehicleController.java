@@ -1,11 +1,13 @@
 package com.kamilz12.vehiclemanagementsystem.controller;
 
+import com.kamilz12.vehiclemanagementsystem.dto.VehicleDTO;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.User;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.UserVehicle;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Vehicle;
 import com.kamilz12.vehiclemanagementsystem.service.user.UserService;
 import com.kamilz12.vehiclemanagementsystem.service.uservehicle.UserVehicleService;
 import com.kamilz12.vehiclemanagementsystem.service.vehicle.VehicleService;
+import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.service.VehicleClientService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,20 +22,23 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/vehicle")
 @Slf4j
-public class VehicleController {
+public class UserVehicleController {
 
     private final VehicleService vehicleService;
     List<Vehicle> vehicles;
-
+    private final VehicleClientService vehicleClientService;
 
     private final UserVehicleService userVehicleService;
     private final UserService userService;
 
-    public VehicleController(VehicleService vehicleService, UserVehicleService userVehicleService, UserService userService) {
+
+    public UserVehicleController(VehicleService vehicleService, VehicleClientService vehicleClientService, UserVehicleService userVehicleService, UserService userService) {
+        this.vehicleClientService = vehicleClientService;
         this.userVehicleService = userVehicleService;
         this.userService = userService;
         this.vehicleService = vehicleService;
         this.vehicles = vehicleService.findAll();
+
     }
 
     @GetMapping("**")
@@ -123,13 +128,27 @@ public class VehicleController {
 
     @PostMapping("/processVehicleForm")
     public String processVehicleForm(@Valid @ModelAttribute("userVehicle") UserVehicle userVehicle, BindingResult bindingResult) {
+        Vehicle vehicle = userVehicle.getVehicle();
+        if (vehicle.getMake() == null || vehicle.getMake().isEmpty()) {
+            bindingResult.rejectValue("vehicle.make", "error.vehicle.make", "Make is required");
+        }
+        if (vehicle.getModel() == null || vehicle.getModel().isEmpty()) {
+            bindingResult.rejectValue("vehicle.model", "error.vehicle.model", "Model is required");
+        }
+        if (vehicle.getYear() == null) {
+            bindingResult.rejectValue("vehicle.year", "error.vehicle.year", "Year is required");
+        }
+        if (vehicle.getEngineName() == null || vehicle.getEngineName().isEmpty()) {
+            bindingResult.rejectValue("vehicle.engineName", "error.vehicle.engineName", "Engine name is required");
+        }
+
         if (bindingResult.hasErrors()) {
             return "vehicle/new-vehicle";
         }
-        Vehicle vehicle = vehicleService.findByInternRestId(userVehicle.getVehicle().getInternRestId());
+        Vehicle vehicleIntern = vehicleService.findByInternRestId(userVehicle.getVehicle().getInternRestId());
         User user = userService.findUserById(userService.findLoggedUserIdByUsername());
         userVehicle.setUser(user);
-        userVehicle.setVehicle(vehicle);
+        userVehicle.setVehicle(vehicleIntern);
         userVehicle.setOwned(true);
         userVehicleService.save(userVehicle);
         return "vehicle/vehicle-confirmation";
@@ -177,6 +196,7 @@ public class VehicleController {
         return "vehicle/new-vehicle";
     }
 
+
     @GetMapping("/deleteUserVehicle")
     String deleteUserVehicle(@RequestParam("id") long id, Model model){
         UserVehicle userVehicle = userVehicleService.findById(id);
@@ -188,11 +208,20 @@ public class VehicleController {
             return "errors/error";
         }
         return "vehicle/vehicle-deleted";
-
     }
 
     @GetMapping("/showVehicleDetails")
-    String showDetails(@RequestParam("id") long id, Model model) {
-        return null;
+    public String showDetails(@RequestParam("id") Long id, Model model) {
+        UserVehicle userVehicle = userVehicleService.findById(id);
+        User user = userService.findUserById(userService.findLoggedUserIdByUsername());
+        if (userVehicle!=null && userVehicle.getUser() ==user) {
+            VehicleDTO vehicleDTO = vehicleClientService.fetchFuelConsumptionData(userVehicle.getVehicle().getInternRestId());
+            model.addAttribute("vehicleData", vehicleDTO);
+            return "vehicle/vehicle-detail";
+        }
+        else{
+            return "errors/error";
+        }
+
     }
 }

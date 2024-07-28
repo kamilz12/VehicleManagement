@@ -5,6 +5,7 @@ import com.kamilz12.vehiclemanagementsystem.dto.VehicleDTO;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Vehicle;
 import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.dto.FuelEconomyDTO;
 import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.dto.FuelEconomyMenuItem;
+import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.dto.FuelEconomyVehicle;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -69,7 +70,7 @@ public class VehicleClient {
             models.forEach(model -> {
                 Map<Integer, String> engines = importEngineAndIDByModelAndMake(make, model, year);
                 engines.forEach((engineId, engineName) -> {
-                    if (year != null && make != null && model != null && engineName != null && engineId != null) {
+                    if (make != null && model != null && engineName != null && engineId != null && !engineName.isEmpty() && !make.isEmpty() &&  !model.isEmpty() && year != null) {
                         vehicles.add(VehicleDTO.builder().year(year).make(make).model(model).engine_name(engineName).engineInternId(engineId).build());
                     } else {
                         log.error("One of the values is null: year={}, make={}, model={}, engineName={}, engineId={}",
@@ -126,11 +127,44 @@ public class VehicleClient {
                 });
     }
 
+    public VehicleDTO fetchYourVehicleConsumptionData(Integer id) {
+        String url = String.format("%s/vehicle/%s", apiUrl, id);
+        FuelEconomyVehicle fuelEconomyVehicle = restTemplate.getForObject(url, FuelEconomyVehicle.class);
+
+        if (fuelEconomyVehicle != null) {
+
+            return VehicleDTO.builder().make(fuelEconomyVehicle.getMake())
+                    .model(fuelEconomyVehicle.getModel())
+                    .year(Integer.valueOf(fuelEconomyVehicle.getYear()))
+                    .fuelType1(fuelEconomyVehicle.getFuelType1())
+                    .city08(fuelEconomyVehicle.getCity08())
+                    .highway08(fuelEconomyVehicle.getHighway08())
+                    .youSaveSpend(fuelEconomyVehicle.getYouSaveSpend())
+                    .engine_name(fuelEconomyVehicle.getBaseModel())
+                    .engineInternId(Integer.valueOf(fuelEconomyVehicle.getId()))
+                    .build();
+        } else {
+            log.error("Received null response from API: {}", url);
+        }
+        return null;
+    }
+
+
     private <T> Optional<T> fetchFromApi(String url, Class<T> responseType, Object... uriVariables) {
         try {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class, uriVariables);
-            String jsonResponse = responseEntity.getBody();
-            return Optional.ofNullable(objectMapper.readValue(jsonResponse, responseType));
+
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+                String jsonResponse = responseEntity.getBody();
+
+                if (jsonResponse != null && !jsonResponse.isEmpty()) {
+                    return Optional.ofNullable(objectMapper.readValue(jsonResponse, responseType));
+                } else {
+                    log.error("Received null or empty response body from API: {}", url);
+                }
+            } else {
+                log.error("Received non-success response status {} from API: {}", responseEntity.getStatusCode(), url);
+            }
         } catch (RestClientException e) {
             log.error("Error calling external API: {}", url, e);
         } catch (Exception e) {
