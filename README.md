@@ -1,8 +1,8 @@
 # Vehicle Data Application
 
-# Vehicle Data Application
-
 This application allows you to fetch data from government sources via the [Fuel Economy API](https://www.fueleconomy.gov/feg/ws/index.shtml). Using this API, you can retrieve information such as the make, model, year of manufacture, and engine specifications of all available cars.
+
+Application uses SpringMVC, Thymeleaf, JavaScript, SpringSecurity, Hibernate, Spring Data, Jackson,  MySQL
 
 ## Features
 
@@ -15,7 +15,8 @@ This application allows you to fetch data from government sources via the [Fuel 
 
 - [ ] Add a maintenance table for handling vehicle servicing.
 - [ ] Implement CRUD operations for adding user vehicles.
-- [ ] Import data from the REST API into the database.
+- [ ] Import data from the REST API into the database such as fuelconsumption
+- [ ] Update vehicle table only for admin with button on main page
 - [ ] Create a user interface.
 
 ## Usage
@@ -28,7 +29,6 @@ This application allows you to fetch data from government sources via the [Fuel 
 ## Contributing
 
 We welcome contributions to improve the application. If you have suggestions or find issues, please open an issue or submit a pull request.
-## Screenshots
 
 <details>
 <summary>Screenshots</summary>
@@ -45,7 +45,6 @@ We welcome contributions to improve the application. If you have suggestions or 
 ![Screenshot 10](https://github.com/user-attachments/assets/537acbc5-3078-42ec-a10e-4afebcaefa74)
 
 </details>
-
 
 ## License
 
