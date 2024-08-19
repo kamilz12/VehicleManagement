@@ -14,10 +14,10 @@ Application uses SpringMVC, Thymeleaf, JavaScript, SpringSecurity, Hibernate, Sp
 ## TODO
 
 - [ ] Add a maintenance table for handling vehicle servicing.
-- [ ] Implement CRUD operations for adding user vehicles.
-- [ ] Import data from the REST API into the database such as fuelconsumption
+- [ ] Implement CRUD operations for adding user vehicles, done
+- [ ] Import data from the REST API into the database such as fuelconsumption, done
 - [ ] Update vehicle table only for admin with button on main page
-- [ ] Create a user interface.
+- [ ] Create a user interface, done
 
 ## Usage
 
