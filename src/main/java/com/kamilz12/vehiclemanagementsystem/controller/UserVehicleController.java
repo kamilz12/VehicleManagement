@@ -5,11 +5,11 @@ import com.kamilz12.vehiclemanagementsystem.model.vehicle.User;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.UserVehicle;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Vehicle;
 import com.kamilz12.vehiclemanagementsystem.service.user.UserService;
-import com.kamilz12.vehiclemanagementsystem.service.uservehicle.UserVehicleService;
 import com.kamilz12.vehiclemanagementsystem.service.vehicle.VehicleService;
 import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.service.VehicleClientService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,19 +24,16 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserVehicleController {
 
-    private final VehicleService vehicleService;
-    List<Vehicle> vehicles;
     private final VehicleClientService vehicleClientService;
-
-    private final UserVehicleService userVehicleService;
+    private final VehicleService vehicleService;
     private final UserService userService;
+    private final List<Vehicle> vehicles;
 
-
-    public UserVehicleController(VehicleService vehicleService, VehicleClientService vehicleClientService, UserVehicleService userVehicleService, UserService userService) {
+    @Autowired
+    public UserVehicleController(VehicleService vehicleService, VehicleClientService vehicleClientService, UserService userService) {
         this.vehicleClientService = vehicleClientService;
-        this.userVehicleService = userVehicleService;
-        this.userService = userService;
         this.vehicleService = vehicleService;
+        this.userService = userService;
         this.vehicles = vehicleService.findAll();
 
     }
@@ -150,14 +147,14 @@ public class UserVehicleController {
         userVehicle.setUser(user);
         userVehicle.setVehicle(vehicleIntern);
         userVehicle.setOwned(true);
-        userVehicleService.save(userVehicle);
+        vehicleService.saveVehicle(userVehicle);
         return "vehicle/vehicle-confirmation";
     }
 
     @GetMapping("/showUserVehicles")
     public String showUserVehicles(Model model){
         User user = userService.findUserById(userService.findLoggedUserIdByUsername());
-        List <UserVehicle> userVehicles = userVehicleService.findAllByUserId(user.getId());
+        List <UserVehicle> userVehicles = vehicleService.findAllVehicleByUserId(user.getId());
         model.addAttribute("userVehicleList",userVehicles);
         return "vehicle/user-vehicles-list";
     }
@@ -165,7 +162,7 @@ public class UserVehicleController {
 
     @GetMapping("/showFormForUpdate")
     String updateForm(@RequestParam("id") long id, Model model){
-        UserVehicle userVehicle = userVehicleService.findById(id);
+        UserVehicle userVehicle = vehicleService.findVehicleById(id);
         model.addAttribute("userVehicle", userVehicle);
 
         // Extract vehicle details
@@ -199,10 +196,10 @@ public class UserVehicleController {
 
     @GetMapping("/deleteUserVehicle")
     String deleteUserVehicle(@RequestParam("id") long id, Model model){
-        UserVehicle userVehicle = userVehicleService.findById(id);
+        UserVehicle userVehicle = vehicleService.findVehicleById(id);
         if(userVehicle!=null) {
             model.addAttribute("userVehicle", userVehicle);
-            userVehicleService.deleteById(id);
+            vehicleService.deleteVehicleById(id);
         }
         else{
             return "errors/error";
@@ -212,7 +209,7 @@ public class UserVehicleController {
 
     @GetMapping("/showVehicleDetails")
     public String showDetails(@RequestParam("id") Long id, Model model) {
-        UserVehicle userVehicle = userVehicleService.findById(id);
+        UserVehicle userVehicle = vehicleService.findVehicleById(id);
         User user = userService.findUserById(userService.findLoggedUserIdByUsername());
         if (userVehicle!=null && userVehicle.getUser() ==user) {
             VehicleDTO vehicleDTO = vehicleClientService.fetchFuelConsumptionData(userVehicle.getVehicle().getInternRestId());

@@ -6,8 +6,10 @@ import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
-public class UserRepositoryImpl implements UserRepository{
+public class UserRepositoryImpl implements UserRepository {
     private final EntityManager entityManager;
 
     public UserRepositoryImpl(EntityManager theEntityManager) {
@@ -15,19 +17,12 @@ public class UserRepositoryImpl implements UserRepository{
     }
 
     @Override
-    public User findByUserName(String theUserName) {
+    public Optional<User> findByUserName(String theUserName) {
 
         TypedQuery<User> theQuery = entityManager.createQuery("from User where username=:uName and enabled=true", User.class);
         theQuery.setParameter("uName", theUserName);
 
-        User theUser;
-        try {
-            theUser = theQuery.getSingleResult();
-        } catch (Exception e) {
-            theUser = null;
-        }
-
-        return theUser;
+        return theQuery.getResultList().stream().findFirst();
     }
 
     @Transactional
@@ -36,15 +31,10 @@ public class UserRepositoryImpl implements UserRepository{
     }
 
     @Override
-    public User findUserById(Long id) {
+    public Optional<User> findUserById(Long id) {
         TypedQuery <User> query = entityManager.createQuery("from User where id=:uId and enabled=true", User.class);
         query.setParameter("uId", id);
-        User user;
-        try {
-            user = query.getSingleResult();
-        } catch (Exception e) {
-            user = null;
-        }
-        return user;
+
+        return query.getResultList().stream().findFirst();
     }
 }

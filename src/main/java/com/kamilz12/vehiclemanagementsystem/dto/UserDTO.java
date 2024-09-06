@@ -11,6 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class UserDTO {
     @NotNull
     @Size(min = 1, message = "size >1")

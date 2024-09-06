@@ -37,7 +37,7 @@ public class VehicleClientService {
                     vehicle.setEngineName(vehicleDTO.getEngine_name());
                     vehicle.setInternRestId(vehicleDTO.getEngineInternId());
                     vehicleRepository.save(vehicle);}
-            else{
+            else {
                     log.info("Vehicle with id: {} already exists in the database", vehicleDTO.getEngineInternId());
                 }
             }
