@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("")
 public class LoginController {
     @GetMapping("/loginPage")
-    public String getLoginPage(){
+    public String getLoginPage() {
         return "registerAndLogin/login-page";
     }
 
     @GetMapping("/**")
-    public String getIndex(){
+    public String getIndex() {
         return "index";
     }
 }

@@ -1,4 +1,4 @@
-package com.kamilz12.vehiclemanagementsystem.security;
+package com.kamilz12.vehiclemanagementsystem.controller;
 
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.User;
 import com.kamilz12.vehiclemanagementsystem.service.user.UserService;
@@ -14,9 +14,11 @@ import java.io.IOException;
 @Controller
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final UserService userService;
+
     public CustomAuthenticationSuccessHandler(UserService theUserService) {
         userService = theUserService;
     }
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse
             response, Authentication authentication)

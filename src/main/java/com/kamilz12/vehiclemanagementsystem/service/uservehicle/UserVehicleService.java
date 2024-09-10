@@ -14,33 +14,34 @@ public class UserVehicleService {
 
     public UserVehicleService(UserVehicleRepositoryCustom userVehicleRepositoryCustom) {
         this.userVehicleRepositoryCustom = userVehicleRepositoryCustom;
-
     }
 
     public void save(UserVehicle userVehicle) {
         userVehicleRepositoryCustom.save(userVehicle);
     }
 
-    public List<UserVehicle> findByVin(UserVehicle userVehicle){
+    public List<UserVehicle> findByVin(UserVehicle userVehicle) {
         return userVehicleRepositoryCustom.findByVin(userVehicle.getVin());
     }
 
-    public List <UserVehicle> findByUserIdVehicleIdVin(UserVehicle userVehicle){
+    public List<UserVehicle> findByUserIdVehicleIdVin(UserVehicle userVehicle) {
         return userVehicleRepositoryCustom.findUserVehicleByUserIdAndVehicleIdAndVin(
                 userVehicle.getUser().getId(), userVehicle.getVehicle().getId(), userVehicle.getVin());
     }
 
-    public List<UserVehicle> findAll(){
+    public List<UserVehicle> findAll() {
         return userVehicleRepositoryCustom.findAll();
     }
-    public List<UserVehicle> findAllByUserId(Long userId){
+
+    public List<UserVehicle> findAllByUserId(Long userId) {
         return userVehicleRepositoryCustom.findAllByUserId(userId);
     }
 
-    public UserVehicle findById (Long id){
+    public UserVehicle findById(Long id) {
         return userVehicleRepositoryCustom.findById(id);
     }
-    public void deleteById(Long id){
+
+    public void deleteById(Long id) {
         userVehicleRepositoryCustom.deleteById(id);
     }
 

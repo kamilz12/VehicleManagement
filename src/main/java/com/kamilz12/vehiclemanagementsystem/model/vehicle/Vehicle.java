@@ -8,49 +8,44 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.*;
+
 @Data
 @Setter
 @Getter
-@Entity (name = "Vehicle")
-@Table (name = "vehicle")
+@Entity(name = "Vehicle")
+@Table(name = "vehicle")
 public class Vehicle {
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
+    public List<UserVehicle> userVehicles = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
     @NotNull(message = "Value can't be null")
     @NotBlank(message = "Make is required")
     @Column(name = "make", nullable = false)
     private String make;
-
     @NotNull(message = "Model is required")
     @NotBlank(message = "Model is required")
     @Column(name = "model", nullable = false)
     private String model;
-
     @NotNull(message = "Value can't be null")
     @Column(name = "year", nullable = false)
     private Integer year;
-
     @NotNull(message = "Value can't be null")
     @Column(name = "intern_rest_id", nullable = false)
     private Integer internRestId;
-
     @NotNull(message = "Engine name is required")
     @NotBlank(message = "Engine name is required")
     @Column(name = "enginename", nullable = false)
     private String engineName;
 
+
     public Vehicle() {
 
     }
 
-
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
-    public List<UserVehicle> userVehicles = new ArrayList<>();
-
-    public void addUser(User user){
+    public void addUser(User user) {
         UserVehicle userVehicle = new UserVehicle(user, this);
         userVehicles.add(userVehicle);
         user.getUserVehicles().add(userVehicle);

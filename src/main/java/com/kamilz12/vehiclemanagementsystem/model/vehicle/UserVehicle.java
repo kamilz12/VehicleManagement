@@ -13,26 +13,25 @@ import java.util.Objects;
 
 @Setter
 @Getter
-@Entity (name = "UserVehicle")
+@Entity(name = "UserVehicle")
 @Table(name = "users_has_vehicle")
 @Builder
 public class UserVehicle {
 
     @Column(name = "id")
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id")
-
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 
-    @Column(name ="vin", nullable = false)
+    @Column(name = "vin", nullable = false)
     @NotNull(message = "Value can't be null")
     @NotBlank(message = "Value is not present, enter value")
     private String vin;
@@ -48,6 +47,7 @@ public class UserVehicle {
 
     public UserVehicle() {
     }
+
     public UserVehicle(User user, Vehicle vehicle) {
         this.user = user;
         this.vehicle = vehicle;
@@ -67,11 +67,11 @@ public class UserVehicle {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserVehicle that = (UserVehicle) o;
-        return Objects.equals(user, that.user) && Objects.equals(vehicle, that.vehicle);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user, vehicle);
+        return Objects.hash(id);
     }
 }

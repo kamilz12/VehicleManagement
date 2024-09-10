@@ -13,6 +13,6 @@ import java.util.List;
 public class FuelEconomyDTO {
     @JsonProperty("menuItem")
     @JsonDeserialize(using = MenuItemDeserializer.class)
-    private List <FuelEconomyMenuItem> menuItem;
+    private List<FuelEconomyMenuItem> menuItem;
 
 }
