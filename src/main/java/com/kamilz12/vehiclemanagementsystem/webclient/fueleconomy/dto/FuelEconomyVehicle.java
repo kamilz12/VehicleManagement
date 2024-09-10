@@ -2,6 +2,7 @@ package com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
+import org.thymeleaf.model.IModel;
 
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -39,25 +39,9 @@ public class RegistrationController {
 		StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
 		
 		dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
-	}
-
-	// TODO: Take all of this business logic to Service class
-	// TODO: Controllers should just call Service class to do logic for them
-	// TODO: Returns in controllers should look like: return YourServiceClass.doSomeMethod
-	// TODO: and then controller return appropriate Http.Status
-	// Keep controller class short and simple
-
-	// Example:
-	//	@GetMapping("{carId}")
-	//	@ResponseStatus(OK)
-	//	public CarDTO getCarDetails(@PathVariable Long carId) {
-	//		return yourService.getAllCars(videoId);
-	//	}
+	}	
 
 
-
-	// TODO: Dont user Big letters, maybe /registration-form/show
-	// same for all mappings in all classes
 	@GetMapping("/showRegistrationForm")
 	public String showMyLoginPage(Model theModel) {
 		
@@ -70,8 +54,7 @@ public class RegistrationController {
 	public String processRegistrationForm(
 			@Valid @ModelAttribute("user") UserDTO userDTO,
 			BindingResult theBindingResult,
-			HttpSession session,
-			Model theModel) {
+			HttpSession session, Model theModel) {
 
 		String userName = userDTO.getUsername();
 		logger.info("Processing registration form for: " + userName);
@@ -83,7 +66,7 @@ public class RegistrationController {
 
 		// check the database if user already exists
         User existing = userService.findUserByUsername(userName);
-        if (existing != null) {
+        if (existing != null){
         	theModel.addAttribute("webUser", new UserDTO());
 			theModel.addAttribute("registrationError", "User name already exists.");
 

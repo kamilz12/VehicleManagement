@@ -6,17 +6,15 @@ import java.util.List;
 
 
 public interface UserVehicleRepositoryCustom {
+    List<UserVehicle> findUserVehicleByUserIdAndVehicleIdAndVin(Long userId, Long vehicleId, String vin);
 
-    // TODO: When you willing to use those methods uncomment otherwise delete
-//    List<UserVehicle> findUserVehicleByUserIdAndVehicleIdAndVin(Long userId, Long vehicleId, String vin);
+    void save(UserVehicle userVehicle);
 
-    void saveVehicle(UserVehicle userVehicle);
+    List<UserVehicle> findByVin(String vin);
+    List<UserVehicle> findAll();
+    List<UserVehicle> findAllByUserId(Long userId);
 
-//    List<UserVehicle> findByVin(String vin);
-//    List<UserVehicle> findAll();
-    List<UserVehicle> findAllByUsersId(Long userId);
+    UserVehicle findById(Long id);
 
-    UserVehicle findVehicleById(Long id);
-
-    void deleteVehicleById(Long id);
+    void deleteById(Long id);
 }
