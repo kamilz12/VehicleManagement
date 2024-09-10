@@ -5,6 +5,7 @@ import com.kamilz12.vehiclemanagementsystem.repository.vehicle.VehicleRepository
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class VehicleService {
@@ -17,19 +18,19 @@ public class VehicleService {
         return vehicleRepository.findAll();
     }
 
-    public List<String> findMakes(){
+    public Set<String> findMakes(){
         return vehicleRepository.findAllDistinctMakesASC();
     }
 
-    public List <String> findModelsByMake(String make){
+    public Set <String> findModelsByMake(String make){
         return vehicleRepository.findAllDistinctModelsByMake(make);
     }
 
-    public List <Integer> findYears(String make, String model){
+    public Set <Integer> findYears(String make, String model){
         return vehicleRepository.findAllDistinctYearsByModelAndYear(make, model);
     }
 
-    public List <String> findEngines(String make, String model, Integer year){
+    public Set<String> findEngines(String make, String model, Integer year){
         return vehicleRepository.findAllDistinctEnginesByMakeModelYear(make,model,year);
     }
 

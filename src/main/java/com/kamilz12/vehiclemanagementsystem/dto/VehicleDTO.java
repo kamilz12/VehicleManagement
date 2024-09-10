@@ -2,10 +2,8 @@ package com.kamilz12.vehiclemanagementsystem.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Builder
 public class VehicleDTO {
 
@@ -13,8 +11,7 @@ public class VehicleDTO {
     private String make;
     private String model;
     private Integer engineInternId;
-    private String engine_name;
-
+    private String engineName;
     private String youSaveSpend;
     private String city08;
     private String highway08;

@@ -37,14 +37,10 @@ public class VehicleClient {
             return yearsCache.get("years");
         }
 
-        List<Integer> years = fetchFromApi(apiUrl + "/vehicle/menu/year", FuelEconomyDTO.class)
-                .map(dto -> dto.getMenuItem().stream()
-                        .map(item -> Integer.parseInt(item.getValue()))
-                        .collect(Collectors.toList()))
-                .orElseGet(() -> {
-                    log.error("Received null or empty response for years");
-                    return new ArrayList<>();
-                });
+        List<Integer> years = fetchFromApi(apiUrl + "/vehicle/menu/year", FuelEconomyDTO.class).map(dto -> dto.getMenuItem().stream().map(item -> Integer.parseInt(item.getValue())).collect(Collectors.toList())).orElseGet(() -> {
+            log.error("Received null or empty response for years");
+            return new ArrayList<>();
+        });
 
         yearsCache.put("years", years);
         return years;
@@ -55,9 +51,7 @@ public class VehicleClient {
         List<String> makes = fetchMakes();
         List<Integer> years = fetchYears();
 
-        List<CompletableFuture<Void>> futures = years.stream()
-                .flatMap(year -> makes.stream().map(make -> fetchAndAddVehiclesForYearAndMake(year, make, vehicles)))
-                .toList();
+        List<CompletableFuture<Void>> futures = years.stream().flatMap(year -> makes.stream().map(make -> fetchAndAddVehiclesForYearAndMake(year, make, vehicles))).toList();
 
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
         return vehicles;
@@ -70,11 +64,10 @@ public class VehicleClient {
             models.forEach(model -> {
                 Map<Integer, String> engines = importEngineAndIDByModelAndMake(make, model, year);
                 engines.forEach((engineId, engineName) -> {
-                    if (make != null && model != null && engineName != null && engineId != null && !engineName.isEmpty() && !make.isEmpty() &&  !model.isEmpty() && year != null) {
-                        vehicles.add(VehicleDTO.builder().year(year).make(make).model(model).engine_name(engineName).engineInternId(engineId).build());
+                    if (make != null && model != null && engineName != null && engineId != null && !engineName.isEmpty() && !make.isEmpty() && !model.isEmpty() && year != null) {
+                        vehicles.add(VehicleDTO.builder().year(year).make(make).model(model).engineName(engineName).engineInternId(engineId).build());
                     } else {
-                        log.error("One of the values is null: year={}, make={}, model={}, engineName={}, engineId={}",
-                                year, make, model, engineName, engineId);
+                        log.error("One of the values is null: year={}, make={}, model={}, engineName={}, engineId={}", year, make, model, engineName, engineId);
                     }
                 });
             });
@@ -83,7 +76,7 @@ public class VehicleClient {
 
     public Vehicle vehicleDTOtoVehicleDAO(VehicleDTO vehicleDTO) {
         Vehicle vehicleDAO = new Vehicle();
-        vehicleDAO.setEngineName(vehicleDTO.getEngine_name());
+        vehicleDAO.setEngineName(vehicleDTO.getEngineName());
         vehicleDAO.setInternRestId(vehicleDTO.getEngineInternId());
         vehicleDAO.setYear(vehicleDTO.getYear());
         vehicleDAO.setMake(vehicleDTO.getMake());
@@ -92,39 +85,28 @@ public class VehicleClient {
     }
 
     public List<String> fetchMakes() {
-        return fetchFromApi(apiUrl + "/ympg/shared/menu/make", FuelEconomyDTO.class)
-                .map(dto -> dto.getMenuItem().stream()
-                        .map(FuelEconomyMenuItem::getValue)
-                        .collect(Collectors.toList()))
-                .orElseGet(() -> {
-                    log.error("Error importing makes");
-                    return new ArrayList<>();
-                });
+        return fetchFromApi(apiUrl + "/ympg/shared/menu/make", FuelEconomyDTO.class).map(dto -> dto.getMenuItem().stream().map(FuelEconomyMenuItem::getValue).collect(Collectors.toList())).orElseGet(() -> {
+            log.error("Error importing makes");
+            return new ArrayList<>();
+        });
     }
 
     public List<String> fetchModels(String make, String year) {
         String url = String.format("%s/vehicle/menu/model?year=%s&make=%s", apiUrl, year, make);
-        return fetchFromApi(url, FuelEconomyDTO.class)
-                .map(dto -> dto.getMenuItem().stream()
-                        .map(FuelEconomyMenuItem::getValue)
-                        .collect(Collectors.toList()))
-                .orElseGet(() -> {
-                    log.error("Error importing models for make: {}, year: {}", make, year);
-                    return new ArrayList<>();
-                });
+        return fetchFromApi(url, FuelEconomyDTO.class).map(dto -> dto.getMenuItem().stream().map(FuelEconomyMenuItem::getValue).collect(Collectors.toList())).orElseGet(() -> {
+            log.error("Error importing models for make: {}, year: {}", make, year);
+            return new ArrayList<>();
+        });
     }
 
     public Map<Integer, String> importEngineAndIDByModelAndMake(String make, String model, Integer year) {
         String url = String.format("%s/vehicle/menu/options?year=%d&make=%s&model=%s", apiUrl, year, make, model);
         return fetchFromApi(url, FuelEconomyDTO.class)
                 .map(dto -> dto.getMenuItem().stream()
-                        .collect(Collectors.toMap(
-                                item -> Integer.parseInt(item.getValue()),
-                                FuelEconomyMenuItem::getText)))
-                .orElseGet(() -> {
-                    log.error("Error importing engines for make, model, year: {}, {}, {}", make, model, year);
-                    return new HashMap<>();
-                });
+                        .collect(Collectors.toMap(item -> Integer.parseInt(item.getValue()), FuelEconomyMenuItem::getText))).orElseGet(() -> {
+            log.error("Error importing engines for make, model, year: {}, {}, {}", make, model, year);
+            return new HashMap<>();
+        });
     }
 
     public VehicleDTO fetchYourVehicleConsumptionData(Integer id) {
@@ -133,16 +115,17 @@ public class VehicleClient {
 
         if (fuelEconomyVehicle != null) {
 
-            return VehicleDTO.builder().make(fuelEconomyVehicle.getMake())
-                    .model(fuelEconomyVehicle.getModel())
-                    .year(Integer.valueOf(fuelEconomyVehicle.getYear()))
-                    .fuelType1(fuelEconomyVehicle.getFuelType1())
-                    .city08(fuelEconomyVehicle.getCity08())
-                    .highway08(fuelEconomyVehicle.getHighway08())
-                    .youSaveSpend(fuelEconomyVehicle.getYouSaveSpend())
-                    .engine_name(fuelEconomyVehicle.getBaseModel())
-                    .engineInternId(Integer.valueOf(fuelEconomyVehicle.getId()))
-                    .build();
+            VehicleDTO.VehicleDTOBuilder builder = VehicleDTO.builder();
+            builder.make(fuelEconomyVehicle.getMake());
+            builder.model(fuelEconomyVehicle.getModel());
+            builder.year(Integer.valueOf(fuelEconomyVehicle.getYear()));
+            builder.fuelType1(fuelEconomyVehicle.getFuelType1());
+            builder.city08(fuelEconomyVehicle.getCity08());
+            builder.highway08(fuelEconomyVehicle.getHighway08());
+            builder.youSaveSpend(fuelEconomyVehicle.getYouSaveSpend());
+            builder.engineName(fuelEconomyVehicle.getBaseModel());
+            builder.engineInternId(Integer.valueOf(fuelEconomyVehicle.getId()));
+            return builder.build();
         } else {
             log.error("Received null response from API: {}", url);
         }
