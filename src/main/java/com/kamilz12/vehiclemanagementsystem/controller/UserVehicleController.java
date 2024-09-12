@@ -17,7 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/vehicle")
@@ -98,20 +97,21 @@ public class UserVehicleController {
         Vehicle vehicle = userVehicle.getVehicle();
         if (vehicle.getMake() == null || vehicle.getMake().isEmpty()) {
             bindingResult.rejectValue("vehicle.make", "error.vehicle.make", "Make is required");
+            return "vehicle/new-vehicle";
         }
         if (vehicle.getModel() == null || vehicle.getModel().isEmpty()) {
             bindingResult.rejectValue("vehicle.model", "error.vehicle.model", "Model is required");
+            return "vehicle/new-vehicle";
         }
         if (vehicle.getYear() == null) {
             bindingResult.rejectValue("vehicle.year", "error.vehicle.year", "Year is required");
+            return "vehicle/new-vehicle";
         }
         if (vehicle.getEngineName() == null || vehicle.getEngineName().isEmpty()) {
             bindingResult.rejectValue("vehicle.engineName", "error.vehicle.engineName", "Engine name is required");
-        }
-
-        if (bindingResult.hasErrors()) {
             return "vehicle/new-vehicle";
         }
+
         Vehicle vehicleIntern = vehicleService.findByInternRestId(userVehicle.getVehicle().getInternRestId());
         User user = userService.findUserById(userService.findLoggedUserIdByUsername());
         userVehicle.setUser(user);

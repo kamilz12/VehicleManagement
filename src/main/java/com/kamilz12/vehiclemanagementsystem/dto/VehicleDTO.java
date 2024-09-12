@@ -6,7 +6,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class VehicleDTO {
-
     private Integer year;
     private String make;
     private String model;
