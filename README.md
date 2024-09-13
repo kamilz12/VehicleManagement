@@ -31,11 +31,11 @@ Firstable you need to set database parametrs
 ```
 
 You need to be in application catalog!
- -> mvn clean install 
- -> docker-compose up --build
+ - mvn clean install 
+ - docker-compose up --build
  Now you need to restart containters
- -> docker-compose down 
- -> docker-compose up --build
+ - docker-compose down 
+ - docker-compose up --build
  Your application is ready for use!
 
 ## Features
