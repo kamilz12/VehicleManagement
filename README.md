@@ -4,31 +4,63 @@ This application allows you to fetch data from government sources via the [Fuel 
 
 Application uses SpringMVC, Thymeleaf, JavaScript, SpringSecurity, Hibernate, Spring Data, Jackson,  MySQL
 
+## Instalation
+Firstable you need to set database parametrs
+`dockercompose.yaml`
+```
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    environment:
+      - MYSQL_USER=MYSQLUSERNAME
+      - MYSQL_PASSWORD=MYSQLPASSWORD
+      - MYSQL_DATABASE=vehicle
+      - MYSQL_ROOT_PASSWORD=MYSQLROOTPASSWORD
+
+  vehicle-app:
+    build: .
+    container_name: vehicle-app
+    ports:
+      - "8080:8080"
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_USERNAME=MYSQLUSERNAME
+      - MYSQL_PASSWORD=MYSQLPASSWORD
+      - MYSQL_DATABASE=vehicle
+      - MYSQL_PORT=3306
+```
+
+You need to be in application catalog!
+ -> mvn clean install 
+ -> docker-compose up --build
+ Now you need to restart containters
+ -> docker-compose down 
+ -> docker-compose up --build
+ Your application is ready for use!
+
 ## Features
 
-- Retrieve vehicle data including make, model, year, and engine specifications from the Fuel Economy API.
-- Select and add vehicles to your user profile.
+- Retrieve vehicle data including make, model, year, and engine specifications from the Fuel Economy API and information about fuel consumption of this vehicles.
+- Make an CRUD operations on your vehicles
 - Store vehicle data in a database.
 - User-friendly interface to manage your vehicle data.
 
 ## TODO
 
-- [ ] Add a maintenance table for handling vehicle servicing.
-- [ ] Implement CRUD operations for adding user vehicles, done
-- [ ] Import data from the REST API into the database such as fuelconsumption, done
-- [ ] Update vehicle table only for admin with button on main page
-- [ ] Create a user interface, done
+- [ ] Update vehicle table only for admin with button on main page | Button is added but it's needed to make a permissions for admin
+- [ ] Maintenance interface
+- [ ] Privileges based on user role
+- [ ] Loading bar for updating vehicles
 
 ## Usage
 
 1. Access the application in your web browser at `http://localhost:8000`.
-2. Use the interface to retrieve vehicle data from the Fuel Economy API.
-3. Select and add vehicles to your profile.
-4. Manage your vehicles and maintenance records through the user interface.
+2. Create account by clicking 'Register'
+3. Use UpdateVehicleData button in welcome page to fetch newest list of vehicles from external API
+4. Keep an instruction in fetch vehicles page, you need to wait for fetching all vehicles. You can watch progress in console. It's recommended to make an vehicle update one/two times per year.
+5. Now you can use all 
 
-## Contributing
 
-We welcome contributions to improve the application. If you have suggestions or find issues, please open an issue or submit a pull request.
 
 <details>
 <summary>Screenshots</summary>
