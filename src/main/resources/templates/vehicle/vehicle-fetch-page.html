@@ -31,21 +31,24 @@
 </nav>
 <br /><br />
 <div class="container">
-    <h3>Deleted Vehicle</h3><br>
-    <p>Please check the details below:</p>
-    <span th:text="${userVehicle.vehicle.getMake()}"></span>
-    <span th:text="${userVehicle.vehicle.getModel()}"></span>
-    <span th:text="${userVehicle.vehicle.getYear()}"></span>
-    <span th:text="${userVehicle.vehicle.getEngineName()}"></span>
-    <br><br>
-    <a href="/index" class="btn btn-primary">Go Home</a>
-    <a href="/vehicle/createNewVehicle" class="btn btn-secondary ">Create New Vehicle</a>
+    <div class="update-info">
+        <p>If it's your first time of running application you need to import vehicle data to application!</p>
+        <p>This operation needs 20-30 minutes to import all of the data and save them, make a good tea and enjoy of waiting!</p>
+        <p>After all of this process you will get an information about a success.</p>
+
+        <p>You can also use this button to update a base of vehicles, process looks simple like fetching them first time</p>
+        <p>All of the progress of this you can track in application console</p>
+        <p>Click "Update vehicle data" to start process. Don't do anything when process is running</p>
+    </div>
+    <form  th:action="@{/vehicleData/fetch}" method="post">
+        <button type="submit">Update vehicle data</button>
+    </form>
     <a href="/vehicle/showUserVehicles" class="btn btn-secondary">Show list of your vehicles</a>
     <form action="#" th:action="@{/logout}" method="post" style="display: inline;">
         <input type="submit" value="Logout" class="btn btn-danger">
     </form>
+    <br><br>
     <a class="btn btn-primary" href="vehicle/main-vehicle.html">Main Vehicle Menu</a>
-
 </div>
 </body>
 </html>

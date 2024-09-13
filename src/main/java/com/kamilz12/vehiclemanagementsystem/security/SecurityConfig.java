@@ -60,15 +60,12 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(configurer ->
                         configurer
-                                .requestMatchers("/").hasRole("EMPLOYEE")
-                                .requestMatchers("/leaders/**").hasRole("MANAGER")
-                                .requestMatchers("/systems/**").hasRole("ADMIN")
                                 .requestMatchers("/register/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form ->
                         form
-                                .loginPage("/loginPage")
+                                .loginPage("/auth/loginPage")
                                 .loginProcessingUrl("/authenticateTheUser")
                                 .successHandler(customAuthenticationSuccessHandler)
                                 .permitAll()

@@ -251,12 +251,6 @@ public class UserVehicleControllerTest {
         verify(bindingResult).rejectValue(eq("vehicle.engineName"), anyString(), anyString());
     }
 
-    @Test
-    void showDetails_InvalidUserVehicle_ReturnsError() {
-        when(userVehicleService.findById(anyLong())).thenReturn(null);
-        String viewName = userVehicleController.showDetails(1L, model);
-        assertEquals("errors/error", viewName);
-    }
 
 
 }

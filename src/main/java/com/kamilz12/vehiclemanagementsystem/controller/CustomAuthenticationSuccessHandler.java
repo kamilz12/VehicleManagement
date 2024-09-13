@@ -23,14 +23,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse
             response, Authentication authentication)
             throws IOException {
-        System.out.println("In customAuthenticationSuccessHandler");
         String userName = authentication.getName();
-        System.out.println("userName=" + userName);
         User theUser = userService.findUserByUsername(userName);
         // now place in the session
         HttpSession session = request.getSession();
         session.setAttribute("user", theUser);
         // forward to home page
-        response.sendRedirect(request.getContextPath() + "/");
+        response.sendRedirect(request.getContextPath() + "auth/welcome");
     }
 }

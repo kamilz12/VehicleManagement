@@ -118,5 +118,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+        <finalName>VehicleManagement</finalName>
     </build>
 </project>

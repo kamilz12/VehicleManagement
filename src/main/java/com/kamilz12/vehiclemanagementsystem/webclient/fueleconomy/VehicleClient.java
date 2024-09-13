@@ -51,7 +51,11 @@ public class VehicleClient {
         List<String> makes = fetchMakes();
         List<Integer> years = fetchYears();
 
-        List<CompletableFuture<Void>> futures = years.stream().flatMap(year -> makes.stream().map(make -> fetchAndAddVehiclesForYearAndMake(year, make, vehicles))).toList();
+        List<CompletableFuture<Void>> futures =
+                years.
+                stream().
+                        flatMap
+                                (year -> makes.stream().map(make -> fetchAndAddVehiclesForYearAndMake(year, make, vehicles))).toList();
 
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
         return vehicles;
@@ -85,7 +89,8 @@ public class VehicleClient {
     }
 
     public List<String> fetchMakes() {
-        return fetchFromApi(apiUrl + "/ympg/shared/menu/make", FuelEconomyDTO.class).map(dto -> dto.getMenuItem().stream().map(FuelEconomyMenuItem::getValue).collect(Collectors.toList())).orElseGet(() -> {
+        return fetchFromApi(apiUrl + "/ympg/shared/menu/make", FuelEconomyDTO.class)
+                .map(dto -> dto.getMenuItem().stream().map(FuelEconomyMenuItem::getValue).collect(Collectors.toList())).orElseGet(() -> {
             log.error("Error importing makes");
             return new ArrayList<>();
         });
@@ -93,20 +98,34 @@ public class VehicleClient {
 
     public List<String> fetchModels(String make, String year) {
         String url = String.format("%s/vehicle/menu/model?year=%s&make=%s", apiUrl, year, make);
-        return fetchFromApi(url, FuelEconomyDTO.class).map(dto -> dto.getMenuItem().stream().map(FuelEconomyMenuItem::getValue).collect(Collectors.toList())).orElseGet(() -> {
-            log.error("Error importing models for make: {}, year: {}", make, year);
-            return new ArrayList<>();
-        });
+        return fetchFromApi(url, FuelEconomyDTO.class)
+                .map(dto -> {
+                    List<String> models = dto.getMenuItem().stream()
+                            .map(FuelEconomyMenuItem::getValue)
+                            .collect(Collectors.toList());
+                    log.info("Successfully imported {} models for make: {}, year: {}", models.size(), make, year); // Log successful import
+                    return models;
+                })
+                .orElseGet(() -> {
+                    log.error("Error importing models for make: {}, year: {}", make, year);
+                    return new ArrayList<>();
+                });
     }
 
     public Map<Integer, String> importEngineAndIDByModelAndMake(String make, String model, Integer year) {
         String url = String.format("%s/vehicle/menu/options?year=%d&make=%s&model=%s", apiUrl, year, make, model);
         return fetchFromApi(url, FuelEconomyDTO.class)
-                .map(dto -> dto.getMenuItem().stream()
-                        .collect(Collectors.toMap(item -> Integer.parseInt(item.getValue()), FuelEconomyMenuItem::getText))).orElseGet(() -> {
-            log.error("Error importing engines for make, model, year: {}, {}, {}", make, model, year);
-            return new HashMap<>();
-        });
+                .map(dto -> {
+                    Map<Integer, String> engines = dto.getMenuItem().stream()
+                            .collect(Collectors.toMap(item -> Integer.parseInt(item.getValue()), FuelEconomyMenuItem::getText));
+                    log.info("Successfully imported {} engines for make: {}, model: {}, year: {}", engines.size(), make, model, year); // Log successful import
+                    return engines;
+                })
+                .orElseGet(() -> {
+                    log.error("Error importing engines for make: {}, model: {}, year: {}", make, model, year);
+                    return new HashMap<>();
+                });
+
     }
 
     public VehicleDTO fetchYourVehicleConsumptionData(Integer id) {

@@ -37,7 +37,7 @@ public class UserVehicleController {
         this.vehicleService = vehicleService;
     }
 
-    @GetMapping("**")
+    @GetMapping("/mainPage")
     public String mainPageVehicle() {
         return "vehicle/main-vehicle";
     }
@@ -64,37 +64,27 @@ public class UserVehicleController {
     @GetMapping("/years")
     @ResponseBody
     public ResponseEntity<Set<Integer>> getAvailableYears(@RequestParam String make, @RequestParam String model) {
-        Set<Integer> years = vehicleService.findYears(make, model);
-        if (years.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(years);
+        return ResponseEntity.ok(vehicleService.findYears(make, model));
     }
 
     @GetMapping("/engines")
     @ResponseBody
     public ResponseEntity<Set<String>> getEnginesByModelAndMake(@RequestParam String make, @RequestParam String model, @RequestParam Integer year) {
-        Set<String> engines = vehicleService.findEngines(make, model, year);
-        if (engines.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(engines);
+        return ResponseEntity.ok(vehicleService.findEngines(make, model, year));
     }
 
     @GetMapping("/internRestId")
     @ResponseBody
     public ResponseEntity<Integer> getInternRestID(@RequestParam String make, @RequestParam String model, @RequestParam Integer year, @RequestParam String engine) {
-        Integer internRestId = vehicleService.findInternRestId(make, model, year, engine);
-        if (internRestId == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(internRestId);
+        return ResponseEntity.ok(vehicleService.findInternRestId(make, model, year, engine));
     }
 
 
     @PostMapping("/processVehicleForm")
     public String processVehicleForm(@Valid @ModelAttribute("userVehicle") UserVehicle userVehicle, BindingResult bindingResult) {
+
         Vehicle vehicle = userVehicle.getVehicle();
+
         if (vehicle.getMake() == null || vehicle.getMake().isEmpty()) {
             bindingResult.rejectValue("vehicle.make", "error.vehicle.make", "Make is required");
             return "vehicle/new-vehicle";
@@ -111,6 +101,9 @@ public class UserVehicleController {
             bindingResult.rejectValue("vehicle.engineName", "error.vehicle.engineName", "Engine name is required");
             return "vehicle/new-vehicle";
         }
+        if(bindingResult.hasErrors()){
+            return "vehicle/new-vehicle";
+        }
 
         Vehicle vehicleIntern = vehicleService.findByInternRestId(userVehicle.getVehicle().getInternRestId());
         User user = userService.findUserById(userService.findLoggedUserIdByUsername());
@@ -124,8 +117,7 @@ public class UserVehicleController {
     @GetMapping("/showUserVehicles")
     public String showUserVehicles(Model model) {
         User user = userService.findUserById(userService.findLoggedUserIdByUsername());
-        List<UserVehicle> userVehicles = userVehicleService.findAllByUserId(user.getId());
-        model.addAttribute("userVehicleList", userVehicles);
+        model.addAttribute("userVehicleList",  userVehicleService.findAllByUserId(user.getId()));
         return "vehicle/user-vehicles-list";
     }
 
@@ -133,6 +125,9 @@ public class UserVehicleController {
     @GetMapping("/showFormForUpdate")
     String updateForm(@RequestParam("id") long id, Model model) {
         UserVehicle userVehicle = userVehicleService.findById(id);
+        if(userVehicle==null){
+            throw new NullPointerException("UserVehicle is null!");
+        }
         model.addAttribute("userVehicle", userVehicle);
 
         // Extract vehicle details
@@ -174,8 +169,11 @@ public class UserVehicleController {
     @GetMapping("/showVehicleDetails")
     public String showDetails(@RequestParam("id") Long id, Model model) {
         UserVehicle userVehicle = userVehicleService.findById(id);
+        if(userVehicle==null){
+            return "errors/access-denied";
+        }
         User user = userService.findUserById(userService.findLoggedUserIdByUsername());
-        if (userVehicle != null && userVehicle.getUser() == user) {
+        if (userVehicle.getUser() == user) {
             VehicleDTO vehicleDTO = vehicleClientService.fetchFuelConsumptionData(userVehicle.getVehicle().getInternRestId());
             model.addAttribute("vehicleData", vehicleDTO);
             return "vehicle/vehicle-detail";

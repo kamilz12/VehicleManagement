@@ -3,6 +3,7 @@ package com.kamilz12.vehiclemanagementsystem.repository.role;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Role;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -29,5 +30,13 @@ public class RoleRepositoryImpl implements RoleRepository{
         }
 
         return theRole;
+    }
+
+    @Transactional
+    @Override
+    public void addRole(String name) {
+        String roleName = name;
+        Role role = new Role(roleName);
+        entityManager.persist(role);
     }
 }

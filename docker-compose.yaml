@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    environment:
+      - MYSQL_USER=
+      - MYSQL_PASSWORD=
+      - MYSQL_DATABASE=vehicle
+      - MYSQL_ROOT_PASSWORD=
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - dbvol:/var/lib/mysql
+
+    networks:
+      - vehicle-network
+
+  vehicle-app:
+    build: .
+    container_name: vehicle-app
+    ports:
+      - "8080:8080"
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_USERNAME=
+      - MYSQL_PASSWORD=
+      - MYSQL_DATABASE=vehicle
+      - MYSQL_PORT=3306
+    depends_on:
+      - mysql
+    networks:
+      - vehicle-network
+
+networks:
+  vehicle-network:
+    name: vehicle-network
+volumes:
+  dbvol:

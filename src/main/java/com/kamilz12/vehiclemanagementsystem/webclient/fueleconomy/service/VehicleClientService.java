@@ -1,5 +1,6 @@
 package com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.service;
 
+import com.kamilz12.vehiclemanagementsystem.configuration.AppConstants;
 import com.kamilz12.vehiclemanagementsystem.dto.VehicleDTO;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Vehicle;
 import com.kamilz12.vehiclemanagementsystem.repository.vehicle.VehicleRepository;
@@ -7,6 +8,7 @@ import com.kamilz12.vehiclemanagementsystem.service.vehicle.VehicleService;
 import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.repository.VehicleClientRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,9 +23,8 @@ public class VehicleClientService {
         this.vehicleService = vehicleService;
         this.vehicleClientRepository = vehicleClientRepository;
     }
-
-    //enable to fetch data from api
-    //@PostConstruct
+    @Async
+    //method used to combine all data from api and save them to database
     public void fetchAndSaveALlVehiclesDataFromAPI() {
         List<VehicleDTO> vehicleDTOList = vehicleClientRepository.fetchAllDataFromDatabase();
         List<Vehicle> vehiclesFromDatabase = vehicleService.findAll();

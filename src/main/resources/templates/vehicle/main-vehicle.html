@@ -10,14 +10,13 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{index}">Vehicle Management</a>
+        <a class="navbar-brand" th:href="@{../}">Vehicle Management</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-
                     <form name="logoutForm" th:action="@{/logout}" method="post">
                         <input hidden type="submit" value="Sign Out"/>
                         <button class="btn btn-primary">Sign Out</button>
@@ -31,9 +30,8 @@
 <br /><br />
 <div class="container">
     <h3>Welcome!</h3>
-    <a href="/static">Go Home</a>
-    <a href="/vehicle/createNewVehicle">Create new vehicle</a>
-    <a href="/vehicle/showUserVehicles">Show user vehicles</a>
+    <a th:href="@{/vehicle/createNewVehicle}">Create new vehicle</a>
+    <a th:href="@{/vehicle/showUserVehicles}">Show user vehicles</a>
     <form action="#" th:action="@{/logout}" method="post">
         <input type="submit" value="Logout">
     </form>
