@@ -33,11 +33,11 @@ Firstable you need to set database parametrs
 You need to be in application catalog!
  - mvn clean install 
  - docker-compose up --build
-**- !! Now you need to restart containters!! 
-** - docker-compose down 
+ - !! Now you need to restart containters!! 
+ - docker-compose down 
  - docker-compose up --build
-**- Your application is ready for use!
-**
+ - Your application is ready for use!
+
 ## Features
 
 - Retrieve vehicle data including make, model, year, and engine specifications from the Fuel Economy API and information about fuel consumption of this vehicles.
