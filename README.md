@@ -1,83 +1,153 @@
-# Vehicle Data Application
 
-This application allows you to fetch data from government sources via the [Fuel Economy API](https://www.fueleconomy.gov/feg/ws/index.shtml). Using this API, you can retrieve information such as the make, model, year of manufacture, and engine specifications of all available cars.
+# Vehicle Management System
 
-Application uses SpringMVC, Thymeleaf, JavaScript, SpringSecurity, Hibernate, Spring Data, Jackson,  MySQL
+## Formal Information
 
-## Instalation
-Firstable you need to set database parametrs
-`dockercompose.yaml`
+### Project Name  
+**Vehicle Management System**
+
+### Technologies Used
+
+- **Backend**:
+  - Java 17  
+  - Spring Boot 3.3.1  
+  - Spring Security – authentication and authorization  
+  - Spring Data JPA – data access layer  
+  - Lombok – boilerplate code reduction
+
+- **Frontend**:
+  - Thymeleaf – HTML templating engine  
+  - Bootstrap (CSS/JS) – user interface styling
+
+- **Database**:
+  - MySQL 8.0
+
+- **Infrastructure**:
+  - Docker – application containerization  
+  - Maven – dependency management and project build
+
+- **Integration**:
+  - REST API – integration with external systems  
+  - Jackson – JSON data processing
+
+## Project Description
+
+The Vehicle Management System addresses the integration challenge of retrieving a large database of vehicles (around 50,000 records) on demand, ensuring the data is as up-to-date as possible. The application pulls data from the U.S. government's FuelEconomy service, which includes relevant information on vehicle makes, models, and other characteristics. The system retrieves data in a structure that does not match the application's own, leading to conflicts that require systematic integration and proper data transformation.
+
+### Sample Questions Answered by the Application:
+1. What is the city fuel consumption for a specific car model?
+2. What vehicles are available on the market?
+3. What engine (type, capacity, fuel) does a given model have depending on the year of production?
+4. What models are available for a given car brand in specific years? (This data is not obvious.)
+5. What type of fuel does a specific vehicle use?
+
+## Environment Setup
+
+### System Requirements
+- Java 17 JDK  
+- Maven 3.6+  
+- Docker and Docker Compose (optional)  
+- MySQL 8.0 (if not running in a container)  
+- IDE with Maven support (recommended: IntelliJ IDEA, Eclipse, VSCode)
+
+### Running with Docker
+
+1. Fill in the database credentials in the `docker-compose.yaml` file:  
+   `docker-compose.yaml`
+```yaml
+mysql:
+  container_name: mysql
+  image: mysql:8.0
+  environment:
+    - MYSQL_USER=MYSQLUSERNAME
+    - MYSQL_PASSWORD=MYSQLPASSWORD
+    - MYSQL_DATABASE=vehicle
+    - MYSQL_ROOT_PASSWORD=MYSQLROOTPASSWORD
+
+vehicle-app:
+  build: .
+  container_name: vehicle-app
+  ports:
+    - "8080:8080"
+  environment:
+    - MYSQL_HOST=mysql
+    - MYSQL_USERNAME=MYSQLUSERNAME
+    - MYSQL_PASSWORD=MYSQLPASSWORD
+    - MYSQL_DATABASE=vehicle
+    - MYSQL_PORT=3306
 ```
-  mysql:
-    container_name: mysql
-    image: mysql:8.0
-    environment:
-      - MYSQL_USER=MYSQLUSERNAME
-      - MYSQL_PASSWORD=MYSQLPASSWORD
-      - MYSQL_DATABASE=vehicle
-      - MYSQL_ROOT_PASSWORD=MYSQLROOTPASSWORD
 
-  vehicle-app:
-    build: .
-    container_name: vehicle-app
-    ports:
-      - "8080:8080"
-    environment:
-      - MYSQL_HOST=mysql
-      - MYSQL_USERNAME=MYSQLUSERNAME
-      - MYSQL_PASSWORD=MYSQLPASSWORD
-      - MYSQL_DATABASE=vehicle
-      - MYSQL_PORT=3306
-```
+Step-by-step commands to run the application:
+- ```mvn clean install```
+- ```docker-compose up --build```
+- Restart the container to ensure the database is properly initialized:
+- ```docker-compose down```
+- ```docker-compose up --build```
 
-You need to be in application catalog!
- -> mvn clean install 
- -> docker-compose up --build
- Now you need to restart containters
- -> docker-compose down 
- -> docker-compose up --build
- Your application is ready for use!
+## Data Sources
 
-## Features
+The system integrates data from the following sources:
 
-- Retrieve vehicle data including make, model, year, and engine specifications from the Fuel Economy API and information about fuel consumption of this vehicles.
-- Make an CRUD operations on your vehicles
-- Store vehicle data in a database.
-- User-friendly interface to manage your vehicle data.
+1. **Internal MySQL database** – stores user, vehicle, and relational data  
+2. **Fuel Economy API** – external API providing fuel consumption and vehicle information  
+3. **User-provided data** – information on vehicles, their specifications, and history
 
-## TODO
+The application manages data from multiple sources and presents it in a unified and consistent format for easy access.
 
-- [ ] Update vehicle table only for admin with button on main page | Button is added but it's needed to make a permissions for admin
-- [ ] Maintenance interface
-- [ ] Privileges based on user role
-- [ ] Loading bar for updating vehicles
+## Additional Information
 
-## Usage
+### Service Access
+- Administrator account credentials seeded in the application:  
+  - **Login**: `adminek`  
+  - **Password**: `admin`
 
-1. Access the application in your web browser at `http://localhost:8000`.
-2. Create account by clicking 'Register'
-3. Use UpdateVehicleData button in welcome page to fetch newest list of vehicles from external API
-4. Keep an instruction in fetch vehicles page, you need to wait for fetching all vehicles. You can watch progress in console. It's recommended to make an vehicle update one/two times per year.
-5. Now you can use all 
+### System Features
+- User registration and login  
+- Adding, editing, and deleting vehicles  
+- Searching for vehicle information  
+- Fetching additional vehicle data from external APIs  
+- Exporting vehicle data to various formats
 
+### Security
+The system uses Spring Security to protect data access. Each user only has access to their own vehicles. Users with the administrator role can also run system integration. The application uses Spring Security's built-in mechanisms for authentication and authorization.  
+The session mechanism is cookie-based with HTTP-only cookies.
 
+### API Integration
+If external APIs are unavailable, the system uses a fallback mechanism based on the `fallback-makes.json` file.
 
+### Running Without Docker
+1. Run: ```mvn clean install```
+2. In the `target` folder, run the app with: ```java -jar application.jar```
+
+   
 <details>
-<summary>Screenshots</summary>
 
-![Screenshot 1](https://github.com/user-attachments/assets/63ad2cf3-a6bb-46ad-8845-e61ea5699487)
-![Screenshot 2](https://github.com/user-attachments/assets/b12e538e-d45a-4778-a07a-d2c7e3c48256)
-![Screenshot 3](https://github.com/user-attachments/assets/8f9ec453-aae2-49d3-8023-97f38fc9f30f)
-![Screenshot 4](https://github.com/user-attachments/assets/5ffbb0ef-cc07-4a43-b6a5-e1a4d2685d94)
-![Screenshot 5](https://github.com/user-attachments/assets/06d080cb-ba70-4c1c-9507-5acdc800987f)
-![Screenshot 6](https://github.com/user-attachments/assets/62321622-4bfd-4e49-9044-d86d27cceff8)
-![Screenshot 7](https://github.com/user-attachments/assets/a0a61741-eaec-4d69-83b6-00539f8facfa)
-![Screenshot 8](https://github.com/user-attachments/assets/d99ac31c-7896-492a-937d-953301a0c699)
-![Screenshot 9](https://github.com/user-attachments/assets/2fcce398-e621-4bc7-a68d-049eb8d07a27)
-![Screenshot 10](https://github.com/user-attachments/assets/537acbc5-3078-42ec-a10e-4afebcaefa74)
+<summary> Screenshots</summary>
 
+![image](https://github.com/user-attachments/assets/f4ef8236-c737-4374-aedc-7bd299c41d9f)
+---
+![image](https://github.com/user-attachments/assets/c1f09339-6f4b-4d16-a07a-297b12545246)
+---
+![image](https://github.com/user-attachments/assets/750c783c-7d37-42f2-94a7-ebcd95de6f11)
+---
+![image](https://github.com/user-attachments/assets/f8e47e60-9791-4433-8a2f-61f70dbdd0fd)
+---
+![image](https://github.com/user-attachments/assets/198dd3f3-aa37-4d7b-a174-7ce5cd4794d5)
+---
+![image](https://github.com/user-attachments/assets/51cc619d-7340-4715-9bc8-8857565e0658)
+---
+![image](https://github.com/user-attachments/assets/284819ad-ab96-4e62-b442-e672691290e7)
+---
+![image](https://github.com/user-attachments/assets/cf2cee7d-b374-4e81-94b4-87df4e893ec1)
+---
+![image](https://github.com/user-attachments/assets/346c282e-5b78-4f52-afef-9e8417fda750)
+---
+![image](https://github.com/user-attachments/assets/dd04ffff-8aed-4661-b8a5-6d7b1042f02f)
+---
+### NO USER ADMIN: 
+
+![image](https://github.com/user-attachments/assets/cb17fd0f-4318-426e-af64-675e4733b27c)
+---
 </details>
 
-## License
 
-This project is licensed under the MIT License.
