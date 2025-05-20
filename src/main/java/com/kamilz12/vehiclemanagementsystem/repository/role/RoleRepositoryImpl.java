@@ -3,7 +3,8 @@ package com.kamilz12.vehiclemanagementsystem.repository.role;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.Role;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -15,6 +16,7 @@ public class RoleRepositoryImpl implements RoleRepository{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Role findRoleByName(String theRoleName) {
 
         // retrieve/read from database using name
@@ -32,11 +34,10 @@ public class RoleRepositoryImpl implements RoleRepository{
         return theRole;
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     @Override
     public void addRole(String name) {
-        String roleName = name;
-        Role role = new Role(roleName);
+        Role role = new Role(name);
         entityManager.persist(role);
     }
 }

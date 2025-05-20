@@ -8,14 +8,18 @@ import com.kamilz12.vehiclemanagementsystem.service.user.UserService;
 import com.kamilz12.vehiclemanagementsystem.service.uservehicle.UserVehicleService;
 import com.kamilz12.vehiclemanagementsystem.service.vehicle.VehicleService;
 import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.service.VehicleClientService;
+import com.kamilz12.vehiclemanagementsystem.service.export.VehicleExportService;
 import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -25,16 +29,19 @@ public class UserVehicleController {
 
     private final VehicleService vehicleService;
     private final VehicleClientService vehicleClientService;
-
     private final UserVehicleService userVehicleService;
     private final UserService userService;
+    private final VehicleExportService vehicleExportService;
 
 
-    public UserVehicleController(VehicleService vehicleService, VehicleClientService vehicleClientService, UserVehicleService userVehicleService, UserService userService) {
+    public UserVehicleController(VehicleService vehicleService, VehicleClientService vehicleClientService,
+                                 UserVehicleService userVehicleService, UserService userService,
+                                 VehicleExportService vehicleExportService) {
         this.vehicleClientService = vehicleClientService;
         this.userVehicleService = userVehicleService;
         this.userService = userService;
         this.vehicleService = vehicleService;
+        this.vehicleExportService = vehicleExportService;
     }
 
     @GetMapping("/mainPage")
@@ -47,6 +54,16 @@ public class UserVehicleController {
     public String createNewVehicle(Model model) {
         UserVehicle userVehicle = new UserVehicle();
         model.addAttribute("userVehicle", userVehicle);
+
+        // Inicjalizacja listy marek dostępnych pojazdów
+        Set<String> makes = vehicleService.findMakes();
+        model.addAttribute("makes", makes);
+
+        // Inicjalizacja pustych list dla modeli, lat i silników
+        model.addAttribute("models", new HashSet<String>());
+        model.addAttribute("years", new HashSet<Integer>());
+        model.addAttribute("engines", new HashSet<String>());
+
         return "vehicle/new-vehicle";
     }
 
@@ -101,7 +118,7 @@ public class UserVehicleController {
             bindingResult.rejectValue("vehicle.engineName", "error.vehicle.engineName", "Engine name is required");
             return "vehicle/new-vehicle";
         }
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return "vehicle/new-vehicle";
         }
 
@@ -116,16 +133,45 @@ public class UserVehicleController {
 
     @GetMapping("/showUserVehicles")
     public String showUserVehicles(Model model) {
-        User user = userService.findUserById(userService.findLoggedUserIdByUsername());
-        model.addAttribute("userVehicleList",  userVehicleService.findAllByUserId(user.getId()));
+        try {
+            User user = userService.findUserById(userService.findLoggedUserIdByUsername());
+            if (user == null) {
+                log.error("Nie znaleziono zalogowanego użytkownika");
+                return "errors/error";
+            }
+
+            List<UserVehicle> userVehicles = userVehicleService.findAllByUserId(user.getId());
+            log.info("Znaleziono {} pojazdów dla użytkownika o ID: {}",
+                    userVehicles != null ? userVehicles.size() : "0", user.getId());
+
+            // Sprawdzenie czy vehicles są poprawnie załadowane
+            if (userVehicles != null && !userVehicles.isEmpty()) {
+                for (int i = 0; i < userVehicles.size(); i++) {
+                    UserVehicle uv = userVehicles.get(i);
+                    if (uv.getVehicle() == null) {
+                        log.error("Pojazd nr {} (ID: {}) ma null w polu vehicle", i+1, uv.getId());
+                    } else {
+                        log.info("Pojazd nr {} (ID: {}): {} {} {}", i+1, uv.getId(),
+                               uv.getVehicle().getMake(), uv.getVehicle().getModel(), uv.getVehicle().getYear());
+                    }
+                }
+            }
+
+            model.addAttribute("userVehicleList", userVehicles);
+        } catch (Exception e) {
+            log.error("Wystąpił błąd podczas pobierania pojazdów użytkownika", e);
+            model.addAttribute("errorMessage", "Wystąpił błąd podczas pobierania pojazdów: " + e.getMessage());
+            return "errors/error";
+        }
         return "vehicle/user-vehicles-list";
     }
 
 
     @GetMapping("/showFormForUpdate")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     String updateForm(@RequestParam("id") long id, Model model) {
         UserVehicle userVehicle = userVehicleService.findById(id);
-        if(userVehicle==null){
+        if (userVehicle == null) {
             throw new NullPointerException("UserVehicle is null!");
         }
         model.addAttribute("userVehicle", userVehicle);
@@ -169,7 +215,7 @@ public class UserVehicleController {
     @GetMapping("/showVehicleDetails")
     public String showDetails(@RequestParam("id") Long id, Model model) {
         UserVehicle userVehicle = userVehicleService.findById(id);
-        if(userVehicle==null){
+        if (userVehicle == null) {
             return "errors/access-denied";
         }
         User user = userService.findUserById(userService.findLoggedUserIdByUsername());
@@ -181,5 +227,37 @@ public class UserVehicleController {
             return "errors/error";
         }
 
+    }
+
+
+    @GetMapping("/exportVehicles")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String showExportPage(Model model) {
+        model.addAttribute("exportTypes", Arrays.asList("JSON", "XML", "YAML"));
+        return "vehicle/vehicle-export";
+    }
+
+
+    @GetMapping("/export/json")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void exportToJson(HttpServletResponse response) throws IOException {
+        List<VehicleDTO> vehicles = vehicleService.fetchLimitedVehicles(1000);
+        vehicleExportService.exportToJson(vehicles, response);
+    }
+
+
+    @GetMapping("/export/xml")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void exportToXml(HttpServletResponse response) throws IOException {
+        List<VehicleDTO> vehicles = vehicleService.fetchLimitedVehicles(1000);
+        vehicleExportService.exportToXml(vehicles, response);
+    }
+
+
+    @GetMapping("/export/yaml")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void exportToYaml(HttpServletResponse response) throws IOException {
+        List<VehicleDTO> vehicles = vehicleService.fetchLimitedVehicles(1000);
+        vehicleExportService.exportToYaml(vehicles, response);
     }
 }

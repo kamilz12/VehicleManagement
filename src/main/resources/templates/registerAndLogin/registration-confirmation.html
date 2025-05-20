@@ -1,23 +1,65 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-
+<html xmlns:th="http://www.thymeleaf.org" lang="pl">
 <head>
-	<title>Registration Confirmation</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Potwierdzenie rejestracji - System Zarządzania Pojazdami</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<style>
+		.navbar {
+			box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+		}
+		.card {
+			border-radius: 10px;
+			box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+		}
+		.icon-success {
+			font-size: 4rem;
+			color: #198754; /* Bootstrap success green */
+		}
+	</style>
 </head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<div class="container">
+		<a class="navbar-brand" th:href="@{/}">
+			<i class="bi bi-car-front-fill"></i> System Zarządzania Pojazdami
+		</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+				<li class="nav-item">
+					<a class="nav-link" th:href="@{/auth/loginPage}"><i class="bi bi-box-arrow-in-right"></i> Logowanie</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
 
-<body>
+<div class="container mt-5">
+	<div class="row justify-content-center">
+		<div class="col-md-6 col-lg-5">
+			<div class="card shadow-sm text-center">
+				<div class="card-header bg-success text-white">
+					<h5 class="card-title mb-0">Rejestracja zakończona pomyślnie</h5>
+				</div>
+				<div class="card-body">
+					<div class="icon-success mb-3">
+						<i class="bi bi-check-circle-fill"></i>
+					</div>
+					<p class="lead">Twoje konto zostało utworzone. Możesz się teraz zalogować do systemu.</p>
+					<a th:href="@{/auth/loginPage}" class="btn btn-success mt-3">
+						<i class="bi bi-box-arrow-in-right"></i> Przejdź do logowania
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
-	<h2>User registered successfully!</h2>
-
-	<ul>
-		<li th:text="'User name: ' + ${user.username}"></li>
-
-	</ul>
-
-	<hr>
-	
-	<a th:href="@{/auth/loginPage}">Login with new user name</a>
-	
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
-
 </html>

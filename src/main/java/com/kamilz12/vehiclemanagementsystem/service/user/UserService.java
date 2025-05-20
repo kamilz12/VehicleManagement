@@ -70,6 +70,14 @@ public class UserService implements UserDetailsService {
         return userRepository.findUserById(id);
     }
 
+    public RoleRepository getRoleRepository() {
+        return this.roleRepository;
+    }
+
+    public UserRepository getUserRepository() {
+        return this.userRepository;
+    }
+
 
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         User user = userRepository.findByUserName(userName);

@@ -3,8 +3,11 @@ package com.kamilz12.vehiclemanagementsystem.repository.user;
 import com.kamilz12.vehiclemanagementsystem.model.vehicle.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.stereotype.Repository;
+
+import java.io.Serializable;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository{
@@ -15,6 +18,7 @@ public class UserRepositoryImpl implements UserRepository{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User findByUserName(String theUserName) {
 
         TypedQuery<User> theQuery = entityManager.createQuery("from User where username=:uName and enabled=true", User.class);
@@ -30,12 +34,13 @@ public class UserRepositoryImpl implements UserRepository{
         return theUser;
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void save(User theUser) {
         entityManager.merge(theUser);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User findUserById(Long id) {
         TypedQuery <User> query = entityManager.createQuery("from User where id=:uId and enabled=true", User.class);
         query.setParameter("uId", id);

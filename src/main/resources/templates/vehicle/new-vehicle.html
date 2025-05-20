@@ -1,199 +1,288 @@
 <!DOCTYPE html>
-<html lang="en"
+<html lang="pl"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 <head>
     <meta charset="UTF-8">
-    <title>Registration and Login System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dodaj pojazd - System Zarządzania Pojazdami</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-container {
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .form-select:focus, .form-control:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        .card {
+            border-radius: 10px;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-light">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{../}">Vehicle Management</a>
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-car-front-fill"></i> System Zarządzania Pojazdami
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-
-                    <form name="logoutForm" th:action="@{/logout}" method="post">
-                        <input hidden type="submit" value="Sign Out"/>
-                        <button class="btn btn-primary">Sign Out</button>
-                    </form>
-
+                    <a class="nav-link" th:href="@{/vehicle/mainPage}">Panel pojazdów</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vehicle/showUserVehicles}">Twoje pojazdy</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link active" th:href="@{/vehicle/createNewVehicle}">Dodaj pojazd</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/vehicleData/showFetchPage}">Dane pojazdów</a>
                 </li>
             </ul>
+            <form th:action="@{/logout}" method="post" class="d-flex">
+                <button class="btn btn-outline-light" type="submit">
+                    <i class="bi bi-box-arrow-right"></i> Wyloguj
+                </button>
+            </form>
         </div>
     </div>
 </nav>
-<br /><br />
-<div class="container">
-    <form th:action="@{/vehicle/processVehicleForm}" th:object="${userVehicle}" method="post">
-        <input type="hidden" th:field="*{id}">
-        <table class="table table-bordered">
-            <tr>
-                <td><label for="make">Make:</label></td>
-                <td>
-                    <select class="form-control" id="make" th:field="*{vehicle.make}">
-                        <option th:value="${null}" th:text="|Select a make|"></option>
-                        <option th:each="make : ${makes}" th:value="${make}" th:text="${make}"></option>
-                    </select>
-                    <span class="text-danger" th:if='${#fields.hasErrors("vehicle.make")}' th:errors="*{vehicle.make}"></span>
-                </td>
-            </tr>
-            <tr>
-                <td><label for="model">Model:</label></td>
-                <td>
-                    <select class="form-control" id="model" th:field="*{vehicle.model}">
-                        <option th:value="${null}" th:text="|Select a model|"></option>
-                        <option th:each="model : ${models}" th:value="${model}" th:text="${model}"></option>
-                    </select>
-                    <span class="text-danger" th:if='${#fields.hasErrors("vehicle.model")}' th:errors="*{vehicle.model}"></span>
-                </td>
-            </tr>
-            <tr>
-                <td><label for="year">Year:</label></td>
-                <td>
-                    <select class="form-control" id="year" th:field="*{vehicle.year}">
-                        <option th:value="${null}" th:text="|Select a year|"></option>
-                        <option th:each="year : ${years}" th:value="${year}" th:text="${year}"></option>
-                    </select>
-                    <span class="text-danger" th:if='${#fields.hasErrors("vehicle.year")}' th:errors="*{vehicle.year}"></span>
-                </td>
-            </tr>
-            <tr>
-                <td><label for="engine">Engine:</label></td>
-                <td>
-                    <select class="form-control" id="engine" th:field="*{vehicle.engineName}">
-                        <option th:value="${null}" th:text="|Select an engine|"></option>
-                        <option th:each="engine : ${engines}" th:value="${engine}" th:text="${engine}"></option>
-                    </select>
-                    <span class="text-danger" th:if='${#fields.hasErrors("vehicle.engineName")}' th:errors="*{vehicle.engineName}"></span>
-                </td>
-            </tr>
-            <tr>
-                <td><label for="vin">VIN:</label></td>
-                <td>
-                    <input type="text" id="vin" th:field="*{vin}" class="form-control"/>
-                    <span class="text-danger" th:if='${#fields.hasErrors("vin")}' th:errors="*{vin}"></span>
-                </td>
-            </tr>
-            <tr>
-                <td><label for="mileage">Mileage:</label></td>
-                <td>
-                    <input type="number" id="mileage" th:field="*{mileage}" class="form-control" required/>
-                    <span class="text-danger" th:if='${#fields.hasErrors("mileage")}' th:errors="*{mileage}"></span>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="3">
-                    <input type="hidden" id="internRestId" th:value="internRestId" th:field="*{vehicle.internRestId}">
-                    <input type="submit" value="Submit" class="btn btn-primary">
-                </td>
-            </tr>
-        </table>
-    </form>
-    <a class="btn btn-primary" th:href="@{/vehicle/mainPage}">Main vehicle menu</a>
 
-    <script>
-        $(document).ready(function() {
-            $.ajax({
-                url: '/vehicle/makes',
-                type: 'GET',
-                success: function(response) {
-                    let makeSelect = $('#make');
-                    $.each(response, function(index, make) {
-                        makeSelect.append('<option value="' + make + '">' + make + '</option>');
-                    });
-                }
-            });
+<div class="container mt-5">
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0"><i class="bi bi-plus-circle"></i> Dodaj nowy pojazd</h3>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/vehicle/processVehicleForm}" th:object="${userVehicle}" method="post" class="needs-validation" novalidate>
+                <input type="hidden" th:field="*{id}">
+                <input type="hidden" id="internRestId" th:value="internRestId" th:field="*{vehicle.internRestId}">
 
-            $('#make').change(function() {
-                let selectedMake = $(this).val();
-                let modelSelect = $('#model');
-                modelSelect.empty().append('<option th:value="${null}" th:text="|Select a model|"></option>');
-                $('#year').empty().append('<option th:value="${null}" th:text="|Select a year|"></option>');
-                $('#engine').empty().append('<option th:value="${null}" th:text="|Select an engine|"></option>');
-                $('#internRestId').val('');
-                if (selectedMake) {
-                    $.ajax({
-                        url: '/vehicle/models',
-                        type: 'GET',
-                        data: { make: selectedMake },
-                        success: function(response) {
-                            $.each(response, function(index, model) {
-                                modelSelect.append('<option value="' + model + '">' + model + '</option>');
-                            });
-                        }
-                    });
-                }
-            });
+                <div class="row g-3">
+                    <div class="col-md-6 mb-3">
+                        <label for="make" class="form-label">Marka:</label>
+                        <select class="form-select" id="make" th:field="*{vehicle.make}" required>
+                            <option value="" selected disabled>Wybierz markę</option>
+                            <option th:each="make : ${makes}" th:value="${make}" th:text="${make}"></option>
+                        </select>
+                        <div class="invalid-feedback">Wybierz markę pojazdu</div>
+                        <span class="text-danger" th:if='${#fields.hasErrors("vehicle.make")}' th:errors="*{vehicle.make}"></span>
+                    </div>
 
-            $('#model').change(function() {
-                let selectedMake = $('#make').val();
-                let selectedModel = $(this).val();
-                let yearSelect = $('#year');
-                yearSelect.empty().append('<option th:value="${null}" th:text="|Select a year|"></option>');
-                $('#engine').empty().append('<option th:value="${null}" th:text="|Select an engine|"></option>');
-                $('#internRestId').val('');
-                if (selectedModel) {
-                    $.ajax({
-                        url: '/vehicle/years',
-                        type: 'GET',
-                        data: { make: selectedMake, model: selectedModel },
-                        success: function(response) {
-                            $.each(response, function(index, year) {
-                                yearSelect.append('<option value="' + year + '">' + year + '</option>');
-                            });
-                        }
-                    });
-                }
-            });
+                    <div class="col-md-6 mb-3">
+                        <label for="model" class="form-label">Model:</label>
+                        <select class="form-select" id="model" th:field="*{vehicle.model}" required>
+                            <option value="" selected disabled>Wybierz model</option>
+                            <option th:each="model : ${models}" th:value="${model}" th:text="${model}"></option>
+                        </select>
+                        <div class="invalid-feedback">Wybierz model pojazdu</div>
+                        <span class="text-danger" th:if='${#fields.hasErrors("vehicle.model")}' th:errors="*{vehicle.model}"></span>
+                    </div>
 
-            $('#year').change(function() {
-                let selectedMake = $('#make').val();
-                let selectedModel = $('#model').val();
-                let selectedYear = $(this).val();
-                let engineSelect = $('#engine');
-                engineSelect.empty().append('<option th:value="${null}" th:text="|Select an engine|"></option>');
-                $('#internRestId').val('');
-                if (selectedYear) {
-                    $.ajax({
-                        url: '/vehicle/engines',
-                        type: 'GET',
-                        data: { make: selectedMake, model: selectedModel, year: selectedYear },
-                        success: function(response) {
-                            $.each(response, function(index, engine) {
-                                engineSelect.append('<option value="' + engine + '">' + engine + '</option>');
-                            });
-                        }
-                    });
-                }
-            });
+                    <div class="col-md-6 mb-3">
+                        <label for="year" class="form-label">Rok produkcji:</label>
+                        <select class="form-select" id="year" th:field="*{vehicle.year}" required>
+                            <option value="" selected disabled>Wybierz rok</option>
+                            <option th:each="year : ${years}" th:value="${year}" th:text="${year}"></option>
+                        </select>
+                        <div class="invalid-feedback">Wybierz rok produkcji</div>
+                        <span class="text-danger" th:if='${#fields.hasErrors("vehicle.year")}' th:errors="*{vehicle.year}"></span>
+                    </div>
 
-            $('#engine').change(function() {
-                let selectedMake = $('#make').val();
-                let selectedModel = $('#model').val();
-                let selectedYear = $('#year').val();
-                let selectedEngine = $(this).val();
-                if (selectedEngine) {
-                    $.ajax({
-                        url: '/vehicle/internRestId',
-                        type: 'GET',
-                        data: { make: selectedMake, model: selectedModel, year: selectedYear, engine: selectedEngine },
-                        success: function(response) {
-                            $('#internRestId').val(response);
-                        }
-                    });
-                }
-            });
-        });
-    </script>
+                    <div class="col-md-6 mb-3">
+                        <label for="engine" class="form-label">Silnik:</label>
+                        <select class="form-select" id="engine" th:field="*{vehicle.engineName}" required>
+                            <option value="" selected disabled>Wybierz silnik</option>
+                            <option th:each="engine : ${engines}" th:value="${engine}" th:text="${engine}"></option>
+                        </select>
+                        <div class="invalid-feedback">Wybierz silnik</div>
+                        <span class="text-danger" th:if='${#fields.hasErrors("vehicle.engineName")}' th:errors="*{vehicle.engineName}"></span>
+                    </div>
 
+                    <div class="col-md-6 mb-3">
+                        <label for="vin" class="form-label">Numer VIN:</label>
+                        <input type="text" id="vin" th:field="*{vin}" class="form-control" required/>
+                        <div class="invalid-feedback">Wprowadź poprawny numer VIN</div>
+                        <span class="text-danger" th:if='${#fields.hasErrors("vin")}' th:errors="*{vin}"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="mileage" class="form-label">Przebieg (km):</label>
+                        <input type="number" id="mileage" th:field="*{mileage}" class="form-control" required/>
+                        <div class="invalid-feedback">Wprowadź przebieg pojazdu</div>
+                        <span class="text-danger" th:if='${#fields.hasErrors("mileage")}' th:errors="*{mileage}"></span>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Zapisz pojazd
+                    </button>
+                    <a class="btn btn-outline-secondary ms-2" th:href="@{/vehicle/mainPage}">
+                        <i class="bi bi-x-circle"></i> Anuluj
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+
+<script th:inline="javascript">
+    // Pobierz bazowy adres URL dla endpointów
+    var contextPath = /*[[@{/}]]*/ '';
+
+    // Skrypt do obsługi dynamicznego pobierania modeli na podstawie wybranej marki
+    $(document).ready(function() {
+        $('#make').change(function() {
+            var make = $(this).val();
+
+            if (make) {
+                $.ajax({
+                    type: 'GET',
+                    url: contextPath + 'vehicle/models',
+                    data: { make: make },
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function(data) {
+                        var modelSelect = $('#model');
+                        modelSelect.empty();
+                        modelSelect.append('<option value="" selected disabled>Wybierz model</option>');
+
+                        $.each(data, function(index, model) {
+                            modelSelect.append($('<option></option>').val(model).text(model));
+                        });
+
+                        // Wyczyść również wybory roku i silnika
+                        $('#year').empty().append('<option value="" selected disabled>Wybierz rok</option>');
+                        $('#engine').empty().append('<option value="" selected disabled>Wybierz silnik</option>');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Błąd podczas pobierania modeli: ' + error);
+                        var modelSelect = $('#model');
+                        modelSelect.empty();
+                        modelSelect.append('<option value="" selected disabled>Błąd pobierania modeli</option>');
+                    }
+                });
+            }
+        });
+
+        // Obsługa dynamicznego pobierania lat na podstawie wybranego modelu
+        $('#model').change(function() {
+            var make = $('#make').val();
+            var model = $(this).val();
+
+            if (make && model) {
+                $.ajax({
+                    type: 'GET',
+                    url: contextPath + 'vehicle/years',
+                    data: {
+                        make: make,
+                        model: model
+                    },
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function(data) {
+                        var yearSelect = $('#year');
+                        yearSelect.empty();
+                        yearSelect.append('<option value="" selected disabled>Wybierz rok</option>');
+
+                        $.each(data, function(index, year) {
+                            yearSelect.append($('<option></option>').val(year).text(year));
+                        });
+
+                        // Wyczyść wybór silnika
+                        $('#engine').empty().append('<option value="" selected disabled>Wybierz silnik</option>');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Błąd podczas pobierania lat: ' + error);
+                        var yearSelect = $('#year');
+                        yearSelect.empty();
+                        yearSelect.append('<option value="" selected disabled>Błąd pobierania lat</option>');
+                    }
+                });
+            }
+        });
+
+        // Obsługa dynamicznego pobierania silników
+        $('#year').change(function() {
+            var make = $('#make').val();
+            var model = $('#model').val();
+            var year = $(this).val();
+
+            if (make && model && year) {
+                $.ajax({
+                    type: 'GET',
+                    url: contextPath + 'vehicle/engines',
+                    data: {
+                        make: make,
+                        model: model,
+                        year: year
+                    },
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function(data) {
+                        var engineSelect = $('#engine');
+                        engineSelect.empty();
+                        engineSelect.append('<option value="" selected disabled>Wybierz silnik</option>');
+
+                        $.each(data, function(index, engine) {
+                            engineSelect.append($('<option></option>').val(engine).text(engine));
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Błąd podczas pobierania silników: ' + error);
+                        var engineSelect = $('#engine');
+                        engineSelect.empty();
+                        engineSelect.append('<option value="" selected disabled>Błąd pobierania silników</option>');
+                    }
+                });
+            }
+        });
+
+        // Obsługa pobierania internRestId
+        $('#engine').change(function() {
+            var make = $('#make').val();
+            var model = $('#model').val();
+            var year = $('#year').val();
+            var engine = $(this).val();
+
+            if (make && model && year && engine) {
+                $.ajax({
+                    type: 'GET',
+                    url: contextPath + 'vehicle/internRestId',
+                    data: {
+                        make: make,
+                        model: model,
+                        year: year,
+                        engine: engine
+                    },
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function(data) {
+                        $('#internRestId').val(data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Błąd podczas pobierania internRestId: ' + error);
+                        alert('Wystąpił problem z pobraniem danych pojazdu. Spróbuj ponownie lub wybierz inne parametry.');
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

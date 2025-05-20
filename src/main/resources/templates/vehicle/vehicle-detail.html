@@ -1,54 +1,161 @@
 <!DOCTYPE html>
-<html lang="en"
+<html lang="pl"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 <head>
     <meta charset="UTF-8">
-    <title>Registration and Login System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Szczegóły pojazdu - System Zarządzania Pojazdami</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .detail-item {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #6c757d;
+        }
+        .detail-value {
+            font-size: 1.1rem;
+        }
+        .card {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .vehicle-header {
+            background-size: cover;
+            background-position: center;
+            height: 200px;
+            position: relative;
+        }
+        .vehicle-header-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            padding: 15px;
+            color: white;
+        }
+        .card-body {
+            padding: 0;
+        }
+        .action-buttons {
+            margin-top: 20px;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-light">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{../}">Vehicle Management</a>
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-car-front-fill"></i> System Zarządzania Pojazdami
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-
-                    <form name="logoutForm" th:action="@{/logout}" method="post">
-                        <input hidden type="submit" value="Sign Out"/>
-                        <button class="btn btn-primary">Sign Out</button>
-                    </form>
-
+                    <a class="nav-link" th:href="@{/vehicle/mainPage}">Panel pojazdów</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vehicle/showUserVehicles}">Twoje pojazdy</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/vehicleData/showFetchPage}">Dane pojazdów</a>
                 </li>
             </ul>
+            <form th:action="@{/logout}" method="post" class="d-flex">
+                <button class="btn btn-outline-light" type="submit">
+                    <i class="bi bi-box-arrow-right"></i> Wyloguj
+                </button>
+            </form>
         </div>
     </div>
 </nav>
-<br /><br />
-<div class="container">
-    <span th:text="${vehicleData.getMake()}"></span>
-    <span th:text="${vehicleData.getModel()}"></span><br>
-    <span th:text="${vehicleData.getYear()}"></span><br>
-    <span th:text="${vehicleData.getEngineName()}"></span><br>
-    <span th:text="${vehicleData.getFuelType1()}"></span><br>
-    <span th:text="${vehicleData.getCity08()}"></span>
 
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="vehicle-header" style="background-image: url('https://images.unsplash.com/photo-1553522151-5f0c7357f381?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');">
+                    <div class="vehicle-header-overlay">
+                        <h2 class="mb-0" th:text="${vehicleData.getMake() + ' ' + vehicleData.getModel()}"></h2>
+                        <p class="mb-0" th:text="${vehicleData.getYear() + ' • ' + vehicleData.getEngineName()}"></p>
+                    </div>
+                </div>
 
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">Marka</div>
+                                <div class="detail-value" th:text="${vehicleData.getMake()}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">Model</div>
+                                <div class="detail-value" th:text="${vehicleData.getModel()}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">Rok produkcji</div>
+                                <div class="detail-value" th:text="${vehicleData.getYear()}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">Silnik</div>
+                                <div class="detail-value" th:text="${vehicleData.getEngineName()}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">Paliwo</div>
+                                <div class="detail-value" th:text="${vehicleData.getFuelType1()}"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <div class="detail-label">Spalanie w mieście</div>
+                                <div class="detail-value" th:text="${vehicleData.getCity08() + ' l/100km'}"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <br><br>
-    <a href="/index" class="btn btn-primary">Go Home</a>
-    <a href="/vehicle/createNewVehicle" class="btn btn-secondary ">Create New Vehicle</a>
-    <a href="/vehicle/showUserVehicles" class="btn btn-secondary">Show list of your vehicles</a>
-    <form action="#" th:action="@{/logout}" method="post" style="display: inline;">
-        <input type="submit" value="Logout" class="btn btn-danger">
-    </form>
-    <a class="btn btn-primary" href="vehicle/main-vehicle.html">Main Vehicle Menu</a>
-
+            <div class="action-buttons d-flex justify-content-between">
+                <div>
+                    <a class="btn btn-outline-primary me-2" th:href="@{/vehicle/showUserVehicles}">
+                        <i class="bi bi-arrow-left"></i> Powrót do listy
+                    </a>
+                </div>
+                <div>
+                    <a class="btn btn-outline-success me-2" th:href="@{/vehicle/createNewVehicle}">
+                        <i class="bi bi-plus-circle"></i> Dodaj nowy pojazd
+                    </a>
+                    <a class="btn btn-outline-secondary" th:href="@{/vehicle/mainPage}">
+                        <i class="bi bi-grid"></i> Panel główny
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

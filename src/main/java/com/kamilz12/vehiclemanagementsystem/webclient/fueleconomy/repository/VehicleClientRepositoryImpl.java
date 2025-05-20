@@ -4,6 +4,7 @@ import com.kamilz12.vehiclemanagementsystem.dto.VehicleDTO;
 import com.kamilz12.vehiclemanagementsystem.webclient.fueleconomy.VehicleClient;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -19,29 +20,34 @@ public class VehicleClientRepositoryImpl implements VehicleClientRepository {
 
     @SneakyThrows
     @Override
+    @Transactional(readOnly = true)
     public List<String> getMakes() {
         return vehicleClient.fetchMakes();
     }
 
     @SneakyThrows
     @Override
+    @Transactional(readOnly = true)
     public List<String> getModelByMake(String make, String year) {
         return vehicleClient.fetchModels(make, year);
     }
 
     @SneakyThrows
     @Override
+    @Transactional(readOnly = true)
     public Map<Integer, String> getEngineByMakeAndModel(String make, String model, Integer year) {
         return vehicleClient.importEngineAndIDByModelAndMake(make, model, year);
     }
 
     @SneakyThrows
     @Override
+    @Transactional(readOnly = true)
     public List<VehicleDTO> fetchAllDataFromDatabase() {
         return vehicleClient.fetchVehicles();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public VehicleDTO getInfoAboutFuelConsumption(Integer id) {
         return vehicleClient.fetchYourVehicleConsumptionData(id);
     }

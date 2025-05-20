@@ -1,40 +1,163 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
->
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Registration and Login System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-          crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>System Zarządzania Pojazdami</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+        }
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
+            background-size: cover;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .hero-section p {
+            font-size: 1.25rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        .features-section {
+            padding: 60px 0;
+        }
+        .feature-icon {
+            font-size: 3rem;
+            color: #0d6efd;
+            margin-bottom: 20px;
+        }
+
+        .hero-section-logged-in {
+            background: url('https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?auto=format&fit=crop&w=2100&q=80') no-repeat center center;
+            background-size: cover;
+            padding: 120px 0;
+            box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.4);
+        }
+        .hero-section-logged-in h1, .hero-section-logged-in p {
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+        }
+        .vehicle-preview-section img {
+            transition: transform 0.3s ease;
+        }
+        .vehicle-preview-section img:hover {
+            transform: scale(1.03);
+        }
+    </style>
 </head>
-<body>
+<body class="bg-light">
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{../}">Vehicle Management</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="bi bi-car-front-fill"></i> System Zarządzania Pojazdami
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-
-                    <form name="logoutForm" th:action="@{/logout}" method="post">
-                        <input hidden type="submit" value="Sign Out"/>
-                        <button class="btn btn-primary">Sign Out</button>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/auth/loginPage}"><i class="bi bi-box-arrow-in-right"></i> Zaloguj się</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/vehicle/mainPage}"><i class="bi bi-speedometer2"></i> Panel</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button class="btn btn-outline-light btn-sm ms-2" type="submit">
+                            <i class="bi bi-box-arrow-right"></i> Wyloguj
+                        </button>
                     </form>
-
                 </li>
             </ul>
         </div>
     </div>
 </nav>
-<br /><br />
-<div class="container">
-    <h3>Hello this is main page</h3>
-    <a class="btn btn-primary" th:href="@{/vehicle/mainPage}">Main vehicle menu</a>
-</div>
+
+<main>
+    <!-- Widok dla NIEZALOGOWANEGO użytkownika -->
+    <div sec:authorize="isAnonymous()">
+        <header class="hero-section">
+            <div class="container">
+                <h1>Witaj w Systemie Zarządzania Pojazdami</h1>
+                <p>Efektywne zarządzanie flotą pojazdów nigdy nie było prostsze.</p>
+                <a th:href="@{/auth/loginPage}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-box-arrow-in-right"></i> Rozpocznij
+                </a>
+            </div>
+        </header>
+
+        <section class="features-section bg-white text-center">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="feature-icon"><i class="bi bi-car-front"></i></div>
+                        <h5>Rejestracja pojazdów</h5>
+                        <p>Dodawaj, edytuj i usuwaj pojazdy w jednym miejscu.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-icon"><i class="bi bi-shield-lock"></i></div>
+                        <h5>Bezpieczeństwo</h5>
+                        <p>Zaloguj się bezpiecznie i zarządzaj dostępem z uprawnieniami.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                        <h5>Statystyki i eksport</h5>
+                        <p>Analizuj dane i eksportuj raporty dotyczące Twojej floty.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Widok dla ZALOGOWANEGO użytkownika -->
+    <div sec:authorize="isAuthenticated()">
+        <section class="hero-section-logged-in text-white text-center">
+            <div class="container py-5">
+                <h1 class="display-4 fw-bold">Witaj ponownie, Kierowco!</h1>
+                <p class="lead mb-4">Zarządzaj flotą pojazdów szybciej niż kiedykolwiek.</p>
+                <a th:href="@{/vehicle/mainPage}" class="btn btn-success btn-lg shadow-lg">
+                    <i class="bi bi-speedometer2"></i> Przejdź do panelu
+                </a>
+            </div>
+        </section>
+
+        <section class="vehicle-preview-section bg-white py-5 text-center">
+            <div class="container">
+                <h2 class="mb-4">Twoja flota czeka na Ciebie</h2>
+                <img src="https://www.vcentrum.pl/wp-content/uploads/2024/10/DSC04928.jpg"
+                     alt="Supersamochód" class="img-fluid rounded shadow-lg mb-4" style="max-width: 60%;">
+                <p class="lead">Wchodząc do panelu, możesz dodawać nowe pojazdy, przeglądać statystyki i więcej!</p>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="bg-dark text-white py-4">
+    <div class="container text-center">
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </body>
 </html>
