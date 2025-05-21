@@ -6,8 +6,9 @@
 Vehicle Management System - System zarządzania pojazdami
 
 ### Skład grupy projektowej i zadania
-1. Kamil Ziółkowski - wszystko
-
+1. Kamil Ziółkowski - backend
+2. Szymon Zych - frontend
+3. wspólnie wykonaliśmy moduł pobierania danych 
 
 ### Wykorzystane technologie
 - **Backend**:
