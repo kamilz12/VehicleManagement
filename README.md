@@ -140,10 +140,13 @@ If external APIs are unavailable, the system uses a fallback mechanism based on 
 ---
 ![image](https://github.com/user-attachments/assets/cf2cee7d-b374-4e81-94b4-87df4e893ec1)
 ---
+![image](https://github-production-user-asset-6210df.s3.amazonaws.com/120686372/445836289-a7020949-825d-4e4d-8f7f-81fdb975d5c8.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250521%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250521T000028Z&X-Amz-Expires=300&X-Amz-Signature=cc66a8c904f1f11913e3a36a4a8b34e84abdf0c54289d944312c3ac20c1b44cb&X-Amz-SignedHeaders=host)
+---
 ![image](https://github.com/user-attachments/assets/346c282e-5b78-4f52-afef-9e8417fda750)
 ---
 ![image](https://github.com/user-attachments/assets/dd04ffff-8aed-4661-b8a5-6d7b1042f02f)
 ---
+
 ### NO USER ADMIN: 
 
 ![image](https://github.com/user-attachments/assets/cb17fd0f-4318-426e-af64-675e4733b27c)
