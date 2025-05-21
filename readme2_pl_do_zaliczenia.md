@@ -34,7 +34,7 @@ Vehicle Management System - System zarządzania pojazdami
   - Jackson - przetwarzanie danych JSON
 
 ## Opis projektu
-System zarządzania pojazdami, który rozwiązuje problem integracyjny pobierania dużej bazy pojazdów (ok 50000 rekordów) w dowolnym momencie z uwzględnieniem pewności, że dane będą jak najbardziej aktualne. Aplikacja pobiera dane z serwisu rządowego USA FuelEconomy gdzie znajudją się odpowiednie marki, modele i inne informacje o pojazdach. Pozwala ona pobrać dane, które są w strukturze niedopasowanej do tej aplikacji i prowadzi do konfliktu co wymaga integracji systemowej i odpowiedniego przetworzenia tych informacji.
+System zarządzania pojazdami, który rozwiązuje problem integracyjny pobierania dużej bazy pojazdów (ok 50000 rekordów) w dowolnym momencie z uwzględnieniem pewności, że dane będą jak najbardziej aktualne. Aplikacja pobiera dane z serwisu rządowego USA FuelEconomy gdzie znajudją się odpowiednie marki, modele i inne informacje o pojazdach. Pozwala ona pobrać dane, które są w strukturze niedopasowanej do tej aplikacji co prowadzi do konfliktu i wymaga integracji systemowej i odpowiedniego przetworzenia tych informacji.
 
 ### Przykładowe pytania, na które odpowiada aplikacja:
 1. Jakie jest zużycie paliwa w mieście dla konkretnego modelu samochodu?
