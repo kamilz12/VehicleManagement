@@ -33,7 +33,7 @@ public class VehicleClient {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private boolean FETCH5 = true; // DEBUG FLAGA DOBRA DO TESTOWANIA
+    private boolean FETCH5 = false; // DEBUG FLAGA DOBRA DO TESTOWANIA
 
     private final String apiUrl = AppConstants.API_URL;
     private final int threadPoolSize = AppConstants.THREAD_POOL_SIZE;
