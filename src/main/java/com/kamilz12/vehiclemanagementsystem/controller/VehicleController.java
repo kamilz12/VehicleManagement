@@ -51,7 +51,6 @@ public class VehicleController {
         status.put("completed", fetchCompleted.get());
         status.put("progress", fetchProgress.get());
         status.put("message", statusMessage);
-        status.put("fetch5Mode", vehicleClient.isFetch5Mode());
         return ResponseEntity.ok(status);
     }
 

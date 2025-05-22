@@ -44,6 +44,7 @@ public class RegistrationController {
         dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
+
     public void seedAdminUser() {
         log.info("Checking if admin user exists");
         User existingAdmin = userService.findUserByUsername("adminek");
@@ -119,7 +120,6 @@ public class RegistrationController {
             log.warn("User name already exists.");
             return "registerAndLogin/registration-form";
         }
-
         userService.save(userDTO);
 
         log.info("Successfully created user: {}", userName);
