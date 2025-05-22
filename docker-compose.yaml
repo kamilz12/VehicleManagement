@@ -4,18 +4,20 @@ services:
     container_name: mysql
     image: mysql:8.0
     environment:
-      - MYSQL_USER=
-      - MYSQL_PASSWORD=
+      - MYSQL_ROOT_PASSWORD=rootpassword
       - MYSQL_DATABASE=vehicle
-      - MYSQL_ROOT_PASSWORD=
     ports:
       - "3307:3306"
     volumes:
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
       - dbvol:/var/lib/mysql
-
     networks:
       - vehicle-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   vehicle-app:
     build: .
@@ -24,17 +26,19 @@ services:
       - "8080:8080"
     environment:
       - MYSQL_HOST=mysql
-      - MYSQL_USERNAME=
-      - MYSQL_PASSWORD=
+      - MYSQL_USERNAME=root
+      - MYSQL_PASSWORD=rootpassword
       - MYSQL_DATABASE=vehicle
       - MYSQL_PORT=3306
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - vehicle-network
 
 networks:
   vehicle-network:
     name: vehicle-network
+
 volumes:
   dbvol:

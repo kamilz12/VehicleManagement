@@ -44,7 +44,6 @@ public class RegistrationController {
         dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
-    @PostConstruct
     public void seedAdminUser() {
         log.info("Checking if admin user exists");
         User existingAdmin = userService.findUserByUsername("adminek");
