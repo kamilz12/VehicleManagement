@@ -77,13 +77,8 @@ public class VehicleController {
                 fetchProgress.set(60);
                 statusMessage = "Pobieranie i zapisywanie danych...";
 
-                // Faktyczne pobieranie pojazdów
-                var vehicleDTOs = vehicleClient.fetchVehicles();
-                var vehicleEntities = vehicleDTOs.stream()
-                        .map(vehicleClient::vehicleDTOtoVehicleDAO)
-                        .toList();
-
                 vehicleClientService.fetchAndSaveALlVehiclesDataFromAPI();
+
 
                 fetchProgress.set(100);
                 statusMessage = "Zakończono pobieranie i zapisywanie danych.";
