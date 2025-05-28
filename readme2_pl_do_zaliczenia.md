@@ -17,8 +17,7 @@ Vehicle Management System - System zarządzania pojazdami
   - Spring Security - uwierzytelnianie i autoryzacja
   - Spring Data JPA - warstwa dostępu do danych
   - Lombok - redukcja kodu boilerplate
-  
-  
+
 - **Frontend**:
   - Thymeleaf - silnik szablonów HTML
   - Bootstrap (CSS/JS) - stylizacja interfejsu użytkownika
@@ -56,37 +55,9 @@ System zarządzania pojazdami, który rozwiązuje problem integracyjny pobierani
 
 
 ### Uruchomienie za pomocą Docker
-
-1. Uzupełnij dane dostępowe do bazy danych w pliku `docker-compose.yaml`
-   `dockercompose.yaml`
-```
-  mysql:
-    container_name: mysql
-    image: mysql:8.0
-    environment:
-      - MYSQL_USER=MYSQLUSERNAME
-      - MYSQL_PASSWORD=MYSQLPASSWORD
-      - MYSQL_DATABASE=vehicle
-      - MYSQL_ROOT_PASSWORD=MYSQLROOTPASSWORD
-
-  vehicle-app:
-    build: .
-    container_name: vehicle-app
-    ports:
-      - "8080:8080"
-    environment:
-      - MYSQL_HOST=mysql
-      - MYSQL_USERNAME=MYSQLUSERNAME
-      - MYSQL_PASSWORD=MYSQLPASSWORD
-      - MYSQL_DATABASE=vehicle
-      - MYSQL_PORT=3306
-```
-Komendy, które należy uruchomić krok po kroku: 
-- ```mvn clean install```
-- ```docker-compose up --build```
-- Należy zrestartować kontener aby baza się poprawnie zainicjalizowała
-- ``` docker-compose down```
-- ```docker-compose up --build```
+Aplikację można uruchomić za pomocą dockera wykonując kolejno komendy: 
+- docker compose up --build
+- docker compose up
 
 
 ## Źródła danych
@@ -121,6 +92,6 @@ Mechanizm sesji oparty na cookie-based razem z http-only.
 W przypadku problemów z dostępem do zewnętrznych API, system posiada mechanizm fallback wykorzystujący dane z pliku `fallback-makes.json`.
 
 ### Uruchomienie bez dockera
-1. ```mvn clean install```
+1. ```mvn clean install``` nalezy miec zainstalowanego lokalnie mavena i jave 
 2. należy uruchomić za pomocą w folderze  target za pomocą```java -jar aplikacja.jar```
 
