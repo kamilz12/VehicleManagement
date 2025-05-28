@@ -37,6 +37,7 @@ Vehicle Management System - System zarządzania pojazdami
 System zarządzania pojazdami, który rozwiązuje problem integracyjny pobierania dużej bazy pojazdów (ok 50000 rekordów) w dowolnym momencie z uwzględnieniem pewności, że dane będą jak najbardziej aktualne. Aplikacja pobiera dane z serwisu rządowego USA FuelEconomy gdzie znajudją się odpowiednie marki, modele i inne informacje o pojazdach. Pozwala ona pobrać dane, które są w strukturze niedopasowanej do tej aplikacji co prowadzi do konfliktu i wymaga integracji systemowej i odpowiedniego przetworzenia tych informacji.
 
 ## Proces przejścia przez ekstrakcję danych z zewnętrznego serwisu FuelEconomy:
+Etap 1:
 1. Najpierw pobierane są lata 1984 - aktualny rok
 2. Później pobierane są marki aut
 3. Później pobierane są modele aut
@@ -46,6 +47,8 @@ Dzięki temu uzyskujemy zmapowane auta z modelami silnikami w zaleznosci od tego
 Etap 2:
 Na podstawie ID, które znajduje się w silnikach ekstraktowane są pozostałe dane o pojazdach i mapowane na warstwę DTO i następnie mapowane do bazy danych i udostępniane do serwisu restowego. 
 Aplikacja jest w formie MVC więc udostępniane są informacje do widoków.
+
+Jezeli chcemy dane pobrać tylko w danych latach, możemy ustawić w aplikacji filter do danego roku. 
 
 ### Przykładowe pytania, na które odpowiada aplikacja:
 1. Jakie jest zużycie paliwa w mieście dla konkretnego modelu samochodu?
