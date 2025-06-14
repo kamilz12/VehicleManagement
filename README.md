@@ -5,20 +5,6 @@
 ### Project Name
 Vehicle Management System – Vehicle management system
 
-![image](https://github.com/user-attachments/assets/f4ef8236-c737-4374-aedc-7bd299c41d9f)
-![image](https://github.com/user-attachments/assets/c1f09339-6f4b-4d16-a07a-297b12545246)
-![image](https://github.com/user-attachments/assets/750c783c-7d37-42f2-94a7-ebcd95de6f11)
-![image](https://github.com/user-attachments/assets/f8e47e60-9791-4433-8a2f-61f70dbdd0fd)
-![image](https://github.com/user-attachments/assets/198dd3f3-aa37-4d7b-a174-7ce5cd4794d5)
-![image](https://github.com/user-attachments/assets/51cc619d-7340-4715-9bc8-8857565e0658)
-![image](https://github.com/user-attachments/assets/284819ad-ab96-4e62-b442-e672691290e7)
-![image](https://github.com/user-attachments/assets/cf2cee7d-b374-4e81-94b4-87df4e893ec1)
-![image](https://github.com/user-attachments/assets/346c282e-5b78-4f52-afef-9e8417fda750)
-
-![image](https://github.com/user-attachments/assets/dd04ffff-8aed-4661-b8a5-6d7b1042f02f)
-
-### View for normal user role
-![image](https://github.com/user-attachments/assets/cb17fd0f-4318-426e-af64-675e4733b27c)
 ### Technologies Used
 - **Backend**
   - Java 17
@@ -70,6 +56,22 @@ If data are needed only for specific years, a year filter can be configured in t
 3. What engine (type, displacement, fuel) does a given model have in a particular production year?  
 4. Which models of a given make are available in selected years (information not directly obvious from the source)?  
 5. What fuel does a specific vehicle use?
+
+## Application View
+![image](https://github.com/user-attachments/assets/f4ef8236-c737-4374-aedc-7bd299c41d9f)
+![image](https://github.com/user-attachments/assets/c1f09339-6f4b-4d16-a07a-297b12545246)
+![image](https://github.com/user-attachments/assets/750c783c-7d37-42f2-94a7-ebcd95de6f11)
+![image](https://github.com/user-attachments/assets/f8e47e60-9791-4433-8a2f-61f70dbdd0fd)
+![image](https://github.com/user-attachments/assets/198dd3f3-aa37-4d7b-a174-7ce5cd4794d5)
+![image](https://github.com/user-attachments/assets/51cc619d-7340-4715-9bc8-8857565e0658)
+![image](https://github.com/user-attachments/assets/284819ad-ab96-4e62-b442-e672691290e7)
+![image](https://github.com/user-attachments/assets/cf2cee7d-b374-4e81-94b4-87df4e893ec1)
+![image](https://github.com/user-attachments/assets/346c282e-5b78-4f52-afef-9e8417fda750)
+
+![image](https://github.com/user-attachments/assets/dd04ffff-8aed-4661-b8a5-6d7b1042f02f)
+
+### View for normal user role
+![image](https://github.com/user-attachments/assets/cb17fd0f-4318-426e-af64-675e4733b27c)
 
 ## Environment Setup
 
